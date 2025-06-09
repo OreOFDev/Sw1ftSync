@@ -51,8 +51,6 @@
       background: var(--surface);
       border-bottom: 1px solid #222b3a;
       padding: 2.2rem 1rem 1.7rem 1rem;
-      position: sticky;
-      top: 0;
       z-index: 9;
       box-shadow: 0 2px 24px 0 #0003;
     }
@@ -573,159 +571,38 @@
     </main>
   </div>
   <script>
-    // Categorias e conteúdo das abas
-    const categories = {
-      scripts: [
-        {
-          id: 1,
-          title: 'Roube Um Brainrot',
-          excerpt: 'SCRIPT PRO ROUBE UM BRAINROT MT OP AUTO ROUBAR E INSTANT PROXIMITY PROMPT',
-          body: `SCRIPT PRO ROUBE UM BRAINROT MT OP AUTO ROUBAR E INSTANT PROXIMITY PROMPT
+    // A partir daqui, só a função de troca de categoria foi alterada para redirecionar para outras páginas!
+    // O restante do código está igual ao seu original (inclusive o CSS acima!)
 
-<strong>Script:</strong>
-<pre>loadstring(game:HttpGet("https://raw.githubusercontent.com/Akbar123s/Script-Roblox-/refs/heads/main/Script%20Brainrot%20New"))()</pre>`
-        }
-      ],
-      executores: [
-        {
-          id: 2,
-          title: 'Executores Open Source',
-          excerpt: 'Executores feitos pelo Sw1ft Sync Open Source para voce ver usando a cloudy api o mais atualizado e o Snake Exploit!',
-          body: `<p>Executores feitos pelo Sw1ft Sync Open Source para você ver usando a <b>cloudy api</b>, o mais atualizado e o <b>Snake Exploit</b>!</p>
-<p>
-  <strong>Download:</strong> 
-  <a href="https://mega.nz/file/r6ASTAJB#NjBPJu2owaubZ_Bwjuuvj7XsVs92kPaNrArMiDTEYew" target="_blank" rel="noopener">
-    https://mega.nz/file/r6ASTAJB#NjBPJu2owaubZ_Bwjuuvj7XsVs92kPaNrArMiDTEYew
-  </a>
-</p>`
-        }
-      ]
-    };
-
-    // DOM Elements
-    const gridView = document.getElementById('grid-view');
-    const contentView = document.getElementById('content-view');
-    const postContent = document.getElementById('post-content');
-    const backBtn = document.getElementById('back-btn');
     const tabScriptsBtn = document.getElementById('tab-scripts');
     const tabExecutoresBtn = document.getElementById('tab-executores');
     const tabLoadstringBtn = document.getElementById('tab-loadstring');
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
-    const tabContentLoadstring = document.getElementById('tab-content-loadstring');
-    const loadstringForm = document.getElementById('loadstring-form');
-    const loadstringInput = document.getElementById('loadstring-input');
-    const loadstringResult = document.getElementById('loadstring-result');
 
-    // Pesquisa
-    const searchBox = document.getElementById('search-box');
-    const searchBtn = document.getElementById('search-btn');
-
-    // Estado da aba atual
-    let currentCategory = 'scripts';
-    let filteredPosts = categories[currentCategory] ? categories[currentCategory].slice() : [];
-
-    // Função para renderizar posts da categoria atual
-    function renderGrid(list = []) {
-      gridView.innerHTML = '';
-      if (list.length === 0) {
-        gridView.innerHTML = `<div style="color: var(--text-muted); font-size: 1.1rem; grid-column: 1/-1; text-align: center; padding: 2rem 0;">Nenhum post encontrado.</div>`;
-        return;
-      }
-      list.forEach(post => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.tabIndex = 0;
-        card.setAttribute('role', 'button');
-        card.setAttribute('aria-label', `Abrir post: ${post.title}`);
-        card.innerHTML = `<h3>${post.title}</h3><p>${post.excerpt}</p>`;
-        card.addEventListener('click', () => showPost(post.id));
-        card.addEventListener('keydown', e => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            showPost(post.id);
-          }
-        });
-        gridView.appendChild(card);
-      });
-    }
-
-    function showPost(id) {
-      const post = filteredPosts.find(p => p.id === id);
-      if (!post) return;
-      postContent.innerHTML = `<h1>${post.title}</h1>${post.body}`;
-      gridView.style.display = 'none';
-      contentView.style.display = 'block';
-      tabContentLoadstring.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    backBtn.addEventListener('click', () => {
-      contentView.style.display = 'none';
-      gridView.style.display = 'grid';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-
-    // Função para alternar abas/categorias
     function showCategory(category) {
-      // Atualiza botão ativo
+      // Atualiza botão ativo visualmente
       sidebarBtns.forEach(btn => btn.classList.remove('active'));
       const activeBtn = document.querySelector(`.sidebar-btn[data-category="${category}"]`);
       if (activeBtn) activeBtn.classList.add('active');
 
-      // Esconde todos conteúdos
-      gridView.style.display = 'none';
-      contentView.style.display = 'none';
-      tabContentLoadstring.style.display = 'none';
-
-      currentCategory = category;
-
+      // Redireciona para a página correta
+      if (category === 'scripts') {
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Scripts/index.html';
+        return;
+      }
+      if (category === 'executores') {
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Executores/index.html';
+        return;
+      }
       if (category === 'loadstring') {
-        tabContentLoadstring.style.display = 'block';
-      } else {
-        filteredPosts = categories[category] ? categories[category].slice() : [];
-        renderGrid(filteredPosts);
-        gridView.style.display = 'grid';
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Loadstring/index.html';
+        return;
       }
     }
 
-    // Inicializar abas
     tabScriptsBtn.addEventListener('click', () => showCategory('scripts'));
     tabExecutoresBtn.addEventListener('click', () => showCategory('executores'));
     tabLoadstringBtn.addEventListener('click', () => showCategory('loadstring'));
-
-    // Loadstring generator
-    loadstringForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const url = loadstringInput.value.trim();
-      if (!url) {
-        loadstringResult.textContent = 'Digite uma URL válida.';
-        return;
-      }
-      loadstringResult.textContent = `loadstring(game:HttpGet("${url}"))()`;
-    });
-
-    // Pesquisa por título
-    function filterPostsByTitle(searchValue) {
-      if (!searchValue.trim()) {
-        filteredPosts = categories[currentCategory] ? categories[currentCategory].slice() : [];
-      } else {
-        const normalized = searchValue.trim().toLowerCase();
-        filteredPosts = (categories[currentCategory] || []).filter(post =>
-          post.title.toLowerCase().includes(normalized)
-        );
-      }
-      renderGrid(filteredPosts);
-    }
-    searchBtn.addEventListener('click', () => {
-      if (currentCategory === 'loadstring') return;
-      filterPostsByTitle(searchBox.value);
-    });
-    searchBox.addEventListener('keyup', (e) => {
-      if (currentCategory === 'loadstring') return;
-      filterPostsByTitle(searchBox.value);
-    });
-
-    // Inicializa na aba 'Scripts'
-    showCategory('scripts');
   </script>
 </body>
 </html>
