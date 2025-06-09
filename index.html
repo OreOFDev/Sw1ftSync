@@ -553,7 +553,6 @@
         <button class="sidebar-btn" id="tab-loadstring" data-category="loadstring">Loadstring</button>
         <button class="sidebar-btn" id="tab-influencers" data-category="influencers">Influencers</button>
         <button class="sidebar-btn" id="tab-flappybird" data-category="flappybird">FlappyBird</button>
-
       </div>
     </nav>
     <main>
@@ -632,6 +631,7 @@
     const tabExecutoresBtn = document.getElementById('tab-executores');
     const tabLoadstringBtn = document.getElementById('tab-loadstring');
     const tabInfluencersBtn = document.getElementById('tab-influencers');
+    const tabFlappyBirdBtn = document.getElementById('tab-flappybird');
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     const tabContentLoadstring = document.getElementById('tab-content-loadstring');
     const loadstringForm = document.getElementById('loadstring-form');
@@ -701,6 +701,10 @@
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Loadstring/index.html';
         return;
       }
+      if (category === 'flappybird') {
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/FlappyBird/index.html';
+        return;
+      }
       // Influencers Home: render grid
       if (category === 'influencers') {
         currentCategory = 'influencers';
@@ -724,6 +728,7 @@
     tabExecutoresBtn.addEventListener('click', () => showCategory('executores'));
     tabLoadstringBtn.addEventListener('click', () => showCategory('loadstring'));
     tabInfluencersBtn.addEventListener('click', () => showCategory('influencers'));
+    if(tabFlappyBirdBtn) tabFlappyBirdBtn.addEventListener('click', () => showCategory('flappybird'));
 
     loadstringForm.addEventListener('submit', function(e) {
       e.preventDefault();
