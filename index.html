@@ -662,7 +662,6 @@
       const activeBtn = document.querySelector(`.sidebar-btn[data-category="${category}"]`);
       if (activeBtn) activeBtn.classList.add('active');
 
-      // Redireciona para a página correta se não for Home
       if (category === 'scripts') {
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Scripts/index.html';
         return;
@@ -679,14 +678,9 @@
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/FlappyBird/index.html';
         return;
       }
-      // Influencers Home: render grid
+      // INFLUENCERS: REDIRECIONA PRA PÁGINA
       if (category === 'influencers') {
-        currentCategory = 'influencers';
-        filteredPosts = categories.influencers.slice();
-        renderGrid(filteredPosts);
-        gridView.style.display = 'grid';
-        contentView.style.display = 'none';
-        tabContentLoadstring.style.display = 'none';
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Influencers/index.html';
         return;
       }
       // Default: Home (Sobre Min)
@@ -702,7 +696,7 @@
     tabExecutoresBtn.addEventListener('click', () => showCategory('executores'));
     tabLoadstringBtn.addEventListener('click', () => showCategory('loadstring'));
     tabInfluencersBtn.addEventListener('click', () => showCategory('influencers'));
-    tabFlappyBirdBtn.addEventListener('click', () => showCategory('flappybird')); // Corrigido: antes tinha if(tabFlappyBirdBtn), agora sempre adiciona e não quebra o click!
+    tabFlappyBirdBtn.addEventListener('click', () => showCategory('flappybird'));
 
     loadstringForm.addEventListener('submit', function(e) {
       e.preventDefault();
