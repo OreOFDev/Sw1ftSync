@@ -87,7 +87,8 @@
     </main>
   </div>
   <script>
-    // Adicionado Aimbot Universal (PC, Mobile) conforme pedido.
+    // Atualização: Adicionado FadHen Brainrot (sem descrição, script puro).
+
     const categories = {
       scripts: [
         {
@@ -121,6 +122,12 @@
           body: `Script feito por Sw1ft Sync de aimbot, aimlock e aimassist para celular e pc<br>
 <strong>Script:</strong>
 <pre>loadstring(game:HttpGet("https://pastefy.app/ZNP2L4hG/raw"))()</pre>`
+        },
+        {
+          id: 5,
+          title: 'FadHen Brainrot',
+          excerpt: '',
+          body: `<pre>loadstring(game:HttpGet("https://pastefy.app/JQbc59np/raw"))()</pre>`
         }
       ]
     };
@@ -147,7 +154,7 @@
         card.tabIndex = 0;
         card.setAttribute('role', 'button');
         card.setAttribute('aria-label', `Abrir post: ${post.title}`);
-        card.innerHTML = `<h3>${post.title}</h3><p>${post.excerpt}</p>`;
+        card.innerHTML = `<h3>${post.title}</h3>${post.excerpt ? `<p>${post.excerpt}</p>` : ""}`;
         card.addEventListener('click', () => showPost(post.id));
         card.addEventListener('keydown', e => {
           if (e.key === 'Enter' || e.key === ' ') {
