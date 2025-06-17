@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Nycoo Designer - Portfólio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    :root {
+      --main-bg: #181c24;
+      --accent: #56c6ff;
+      --card-bg: #23293a;
+      --text-main: #f5f6fa;
+      --text-muted: #aad8f9;
+      --button-bg: #56c6ff;
+      --button-text: #181c24;
+      --border-radius: 16px;
+      --shadow: 0 6px 32px 0 rgba(86,198,255,0.06);
+      --font-main: 'Segoe UI', 'Arial', sans-serif;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font-main);
+      background: var(--main-bg);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+    header {
+      padding: 2.5rem 1rem 1.2rem 1rem;
+      text-align: center;
+      background: var(--card-bg);
+      box-shadow: var(--shadow);
+      border-radius: 0 0 var(--border-radius) var(--border-radius);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.6rem;
+      letter-spacing: 2px;
+      color: var(--accent);
+    }
+    header p {
+      color: var(--text-muted);
+      font-size: 1.18rem;
+      margin: 0.7rem 0 0 0;
+    }
+    main {
+      max-width: 700px;
+      margin: 2.5rem auto;
+      padding: 0 1.2rem;
+    }
+    section {
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 2rem;
+      padding: 1.5rem 2rem;
+      animation: fadein 0.8s;
+    }
+    @keyframes fadein {
+      from { opacity: 0; transform: translateY(30px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    h2 {
+      color: var(--accent);
+      margin-top: 0;
+      font-size: 1.5rem;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    ul li {
+      margin: 0.7em 0;
+      padding-left: 1.1em;
+      position: relative;
+      font-size: 1.08rem;
+    }
+    ul li::before {
+      content: "✔";
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-size: 1rem;
+      top: 1px;
+    }
+    .contact-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1em;
+      margin-top: 1.5em;
+    }
+    .contact-btn {
+      background: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      border-radius: 8px;
+      padding: 0.7em 1.3em;
+      font-size: 1.07rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+      box-shadow: 0 2px 6px 0 rgba(86,198,255,0.08);
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+    .contact-btn:hover {
+      background: #3daed6;
+      transform: translateY(-2px) scale(1.03);
+    }
+    .contact-btn svg {
+      margin-right: 0.5em;
+      vertical-align: middle;
+    }
+    .price {
+      font-size: 1.12rem;
+      color: #aaffcc;
+      margin-top: 1em;
+    }
+    @media (max-width: 600px) {
+      header, main, section { padding-left: 0.5rem; padding-right: 0.5rem;}
+      section { padding: 1em;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Nycoo Designer</h1>
+    <p>Sou o Nycolas, designer gráfico iniciante com foco em conteúdo gamer.<br>
+       Crio <b>thumbnails</b>, <b>logos</b>, <b>banners</b> e <b>edições</b> para YouTubers e streamers.<br>
+       Meu diferencial é a personalização e o foco em deixar o visual do canal mais atrativo.
+    </p>
+  </header>
+  <main>
+    <section>
+      <h2>Serviços</h2>
+      <ul>
+        <li>Thumbnails personalizadas para YouTube</li>
+        <li>Logos para canais e redes sociais</li>
+        <li>Banners para YouTube e Twitch</li>
+        <li>Edição básica de imagens (cor, texto, efeito)</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Como contratar</h2>
+      <div class="contact-buttons">
+        <a class="contact-btn" href="https://instagram.com/NycooDesigner" target="_blank">
+          <svg width="20" height="20" fill="none"><path d="M14.7 2.5H5.3A2.8 2.8 0 0 0 2.5 5.3v9.4a2.8 2.8 0 0 0 2.8 2.8h9.4a2.8 2.8 0 0 0 2.8-2.8V5.3a2.8 2.8 0 0 0-2.8-2.8zM10 14.2a4.2 4.2 0 1 1 0-8.4 4.2 4.2 0 0 1 0 8.4zm4.4-7.7a1 1 0 1 1 0-2.1 1 1 0 0 1 0 2.1z" stroke="#181c24" stroke-width="1.2"/></svg>
+          Instagram: @NycooDesigner
+        </a>
+        <button class="contact-btn" id="copyDiscordBtn" title="Copiar Discord">
+          <svg width="20" height="20" fill="none"><path d="M16.8 4.6A13.3 13.3 0 0 0 12.4 3c-.2-.1-.5 0-.6.2-.2.3-.5.7-.6.9C9.6 4 8.3 3.7 7.2 3c-.2-.2-.5-.1-.6.1A13.2 13.2 0 0 0 3.2 4.6c-.1 0-.2.1-.2.2C1.5 7.4.8 10.2.9 13c0 .1.1.3.2.4a13 13 0 0 0 4.1 2.1c.2.1.4 0 .5-.2.3-.4.6-.9.8-1.3-1-.3-1.9-.7-2.7-1.2-.2-.1-.2-.4 0-.5.2-.1.4-.1.6.1a10.2 10.2 0 0 0 8.2 0c.2-.1.4-.2.6-.1.2.1.2.4 0 .5-.8.5-1.7.9-2.7 1.2.2.4.5.8.8 1.3.1.2.3.3.5.2a13 13 0 0 0 4.1-2.1c.1-.1.2-.3.2-.4.1-2.8-.6-5.6-2.1-8.1 0-.1-.1-.2-.2-.2z" stroke="#181c24" stroke-width="1.2"/></svg>
+          Discord: nyckznkkj
+        </button>
+      </div>
+      <div class="price">
+        Valores a partir de <b>R$5</b> (dependendo do serviço)
+      </div>
+    </section>
+  </main>
+  <script>
+    // Copia o usuário do Discord ao clicar
+    document.getElementById('copyDiscordBtn').addEventListener('click', function() {
+      const discord = 'nyckznkkj';
+      navigator.clipboard.writeText(discord).then(() => {
+        this.innerHTML = 'Copiado! (nyckznkkj)';
+        setTimeout(() => {
+          this.innerHTML = `<svg width="20" height="20" fill="none"><path d="M16.8 4.6A13.3 13.3 0 0 0 12.4 3c-.2-.1-.5 0-.6.2-.2.3-.5.7-.6.9C9.6 4 8.3 3.7 7.2 3c-.2-.2-.5-.1-.6.1A13.2 13.2 0 0 0 3.2 4.6c-.1 0-.2.1-.2.2C1.5 7.4.8 10.2.9 13c0 .1.1.3.2.4a13 13 0 0 0 4.1 2.1c.2.1.4 0 .5-.2.3-.4.6-.9.8-1.3-1-.3-1.9-.7-2.7-1.2-.2-.1-.2-.4 0-.5.2-.1.4-.1.6.1a10.2 10.2 0 0 0 8.2 0c.2-.1.4-.2.6-.1.2.1.2.4 0 .5-.8.5-1.7.9-2.7 1.2.2.4.5.8.8 1.3.1.2.3.3.5.2a13 13 0 0 0 4.1-2.1c.1-.1.2-.3.2-.4.1-2.8-.6-5.6-2.1-8.1 0-.1-.1-.2-.2-.2z" stroke="#181c24" stroke-width="1.2"/></svg> Discord: nyckznkkj`;
+        }, 1500);
+      });
+    });
+  </script>
+</body>
+</html>

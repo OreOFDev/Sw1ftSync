@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Influencers - Sw1ft Sync</title>
+  <link rel="icon" type="image/png" href="https://media.discordapp.net/attachments/1320005895219974184/1381430895944401027/Swift.png?ex=68477d47&is=68462bc7&hm=0c14ddec327f341585b502a81b71c7c6fde41e5e0ab82eb55a2178770f18667f&=&format=png&quality=lossless">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Copie o mesmo CSS do seu index.html aqui para manter o visual igual */
+    :root {
+      --primary: #0a0e16;
+      --surface: #161b22;
+      --accent: #5ddcff;
+      --accent-gradient: linear-gradient(90deg, #5ddcff 0%, #3c67e3 100%);
+      --card-glow: 0 0 16px 0 #5ddcff44, 0 4px 32px 0 #1e293b50;
+      --text-main: #f5f7fa;
+      --text-muted: #a3b1c6;
+      --card-radius: 16px;
+      --button-radius: 8px;
+      --shadow: 0 2px 14px 0 #0008;
+      --header-height: 4.5rem;
+      --transition: 0.19s cubic-bezier(.4,0,.2,1);
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      background: var(--primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      scroll-behavior: smooth;
+    }
+    body {
+      background: radial-gradient(ellipse at 50% 0, #191f2b 60%, #0a0e16 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--surface);
+      border-bottom: 1px solid #222b3a;
+      padding: 2.2rem 1rem 1.7rem 1rem;
+      z-index: 9;
+      box-shadow: 0 2px 24px 0 #0003;
+    }
+    .brand {
+      font-size: 2.6rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      margin: 0 0 1.4rem 0;
+      user-select: none;
+      text-align: center;
+      width: 100%;
+    }
+    #back-home {
+      margin-top: 10px;
+      margin-bottom: 28px;
+      padding: 0.7em 1.5em;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 700;
+      border: none;
+      border-radius: 9px;
+      background: linear-gradient(90deg,#5ddcff 0%,#3c67e3 100%);
+      color: #fff;
+      box-shadow: 0 2px 12px 0 #5ddcff55;
+      cursor: pointer;
+      transition: filter 0.15s;
+      display: block;
+    }
+    #back-home:hover { filter: brightness(1.09);}
+    #grid-view {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 2.1rem;
+      padding: 1.5rem 0;
+      animation: fadeIn 0.5s;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--surface);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-glow);
+      padding: 2rem 1.5rem 1.5rem 1.5rem;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      min-height: 130px;
+      border: 1px solid #232d3d;
+      position: relative;
+      transition: 
+        box-shadow var(--transition),
+        transform var(--transition),
+        border-color var(--transition);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .card:active {
+      transform: scale(.98);
+      box-shadow: 0 2px 8px 0 #5ddcff77, 0 1px 6px 0 #1e293b70;
+      border-color: #5ddcff55;
+    }
+    .card:hover, .card:focus {
+      box-shadow: 0 8px 28px 0 #5ddcff72, 0 2px 18px 0 #1e293b70;
+      transform: translateY(-7px) scale(1.017);
+      border-color: #5ddcff77;
+      outline: none;
+    }
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: .6rem;
+      font-size: 1.22rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .04em;
+    }
+    .card p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 1.07rem;
+      flex-grow: 1;
+    }
+    .card::after {
+      content: '→';
+      color: var(--accent);
+      position: absolute;
+      right: 1.4rem;
+      bottom: 1.2rem;
+      font-size: 1.14rem;
+      opacity: 0.13;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .card:hover::after { opacity: 0.35; }
+    #content-view {
+      display: none;
+      animation: fadeIn 0.5s;
+      padding: 2.3rem 2rem 2rem 2rem;
+      max-width: 760px;
+      margin: 0 auto;
+      background: var(--surface);
+      box-shadow: var(--card-glow);
+      border-radius: var(--card-radius);
+      box-sizing: border-box;
+      border: 1px solid #232d3d;
+      position: relative;
+    }
+    #content-view h1 {
+      margin-top: 0;
+      margin-bottom: 1.2rem;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: .04em;
+    }
+    #post-content p, #post-content pre, #post-content a {
+      font-size: 1.07rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      word-break: break-word;
+    }
+    #post-content a {
+      color: var(--accent);
+      text-decoration: underline;
+      word-break: break-all;
+      transition: color 0.18s;
+    }
+    #post-content a:hover, #post-content a:focus {
+      color: #fff;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      outline: none;
+    }
+    #back-btn {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      padding: 0.55rem 1.3rem 0.5rem 1.3rem;
+      background: var(--accent-gradient);
+      color: #fff;
+      border: none;
+      border-radius: var(--button-radius);
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 1.07rem;
+      font-family: inherit;
+      font-weight: 600;
+      transition: background .17s, box-shadow .17s;
+      box-shadow: 0 2px 10px 0 #0003;
+      border: 1.5px solid #2e445e;
+    }
+    #back-btn:hover, #back-btn:focus {
+      background: linear-gradient(90deg, #3c67e3 0%, #5ddcff 100%);
+      outline: none;
+      box-shadow: 0 4px 18px 0 #5ddcff55;
+    }
+    @media (max-width: 600px) {
+      #grid-view {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        padding: 1rem 0;
+      }
+      .card {
+        padding: 1.0rem 0.8rem 1rem 0.8rem;
+        min-height: 100px;
+        font-size: .96rem;
+        border-radius: 11px;
+      }
+      .card h3 {
+        font-size: 1rem;
+      }
+      .card::after {
+        right: 1rem;
+        bottom: 1rem;
+        font-size: .96rem;
+      }
+      #content-view {
+        padding: 1.1rem 0.5rem;
+        max-width: 99vw;
+        border-radius: 11px;
+      }
+      #back-btn {
+        font-size: .99rem;
+        padding: 0.4rem 0.9rem 0.4rem 0.9rem;
+        border-radius: 7px;
+      }
+    }
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(18px);}
+      100% { opacity: 1; transform: none;}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">Influencers</div>
+    <button id="back-home" onclick="window.location.href='https://oreofdev.github.io/Sw1ftSync/'">&larr; Voltar para Home</button>
+  </header>
+  <main>
+    <section id="grid-view"></section>
+    <section id="content-view">
+      <button id="back-btn" aria-label="Voltar para a lista de influencers">&larr; Voltar</button>
+      <article id="post-content"></article>
+    </section>
+  </main>
+  <script>
+    // Influencers posts separados (posts iguais ao seu index, só a categoria influencers)
+    const influencers = [
+      {
+        id: 1,
+        title: 'Pedrin031',
+        excerpt: '',
+        body: `
+<div style="display:flex;gap:1rem;flex-wrap:wrap;">
+  <a href="http://youtube.com/@Pedrin031-gg" target="_blank" rel="noopener" style="background:var(--accent-gradient);color:#fff;font-weight:700;border:none;border-radius:8px;padding:0.7em 1.5em;text-decoration:none;box-shadow:0 2px 10px 0 #5ddcff55;display:inline-block;transition:filter 0.15s;">YouTube</a>
+  <a href="https://discord.gg/sZ3mejdTmk" target="_blank" rel="noopener" style="background:var(--accent-gradient);color:#fff;font-weight:700;border:none;border-radius:8px;padding:0.7em 1.5em;text-decoration:none;box-shadow:0 2px 10px 0 #5ddcff55;display:inline-block;transition:filter 0.15s;">Discord</a>
+</div>
+        `
+      },
+      {
+        id: 2,
+        title: '!BK',
+        excerpt: '',
+        body: `
+<div style="display:flex;gap:1rem;flex-wrap:wrap;">
+  <a href="https://discord.gg/qYkPEfdEDY" target="_blank" rel="noopener" style="background:var(--accent-gradient);color:#fff;font-weight:700;border:none;border-radius:8px;padding:0.7em 1.5em;text-decoration:none;box-shadow:0 2px 10px 0 #5ddcff55;display:inline-block;transition:filter 0.15s;">Discord</a>
+</div>
+        `
+      }
+    ];
+
+    const gridView = document.getElementById('grid-view');
+    const contentView = document.getElementById('content-view');
+    const postContent = document.getElementById('post-content');
+    const backBtn = document.getElementById('back-btn');
+
+    function renderGrid(list = []) {
+      gridView.innerHTML = '';
+      if (list.length === 0) {
+        gridView.innerHTML = `<div style="color: var(--text-muted); font-size: 1.1rem; grid-column: 1/-1; text-align: center; padding: 2rem 0;">Nenhum influencer encontrado.</div>`;
+        return;
+      }
+      list.forEach(post => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.tabIndex = 0;
+        card.setAttribute('role', 'button');
+        card.setAttribute('aria-label', `Abrir influencer: ${post.title}`);
+        card.innerHTML = `<h3>${post.title}</h3>${post.excerpt ? `<p>${post.excerpt}</p>` : ""}`;
+        card.addEventListener('click', () => showPost(post.id));
+        card.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            showPost(post.id);
+          }
+        });
+        gridView.appendChild(card);
+      });
+    }
+
+    function showPost(id) {
+      const post = influencers.find(p => p.id === id);
+      if (!post) return;
+      postContent.innerHTML = post.body;
+      gridView.style.display = 'none';
+      contentView.style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    backBtn.addEventListener('click', () => {
+      contentView.style.display = 'none';
+      gridView.style.display = 'grid';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Inicializa na aba influencers
+    renderGrid(influencers);
+    gridView.style.display = 'grid';
+  </script>
+</body>
+</html>

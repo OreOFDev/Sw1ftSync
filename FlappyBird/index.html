@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flappy Bird - Sw1ft Sync</title>
+  <style>
+    body {
+      background: linear-gradient(180deg, #90caf9 0%, #e3f2fd 100%);
+      margin: 0;
+      font-family: 'Montserrat', Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #gameCanvas {
+      background: linear-gradient(180deg, #90caf9 0%, #e3f2fd 100%);
+      border: 3px solid #1976d2;
+      border-radius: 14px;
+      box-shadow: 0 4px 32px #1976d288;
+      margin-bottom: 16px;
+      display: block;
+    }
+    #score {
+      font-size: 1.4em;
+      color: #1565c0;
+      margin-bottom: 12px;
+      text-align: center;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    #restartBtn {
+      display: none;
+      margin: 16px 0 0 0;
+      font-size: 1.08em;
+      padding: 0.7em 2.1em;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(90deg,#3c67e3 0%,#5ddcff 100%);
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 2px 10px 0 #5ddcff55;
+      transition: filter 0.15s;
+      position: fixed;
+      left: 24px;
+      top: 74px;
+      z-index: 1000;
+    }
+    #restartBtn:hover { filter: brightness(1.12);}
+    #back-home {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      z-index: 1000;
+      padding: 0.7em 1.5em;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 700;
+      border: none;
+      border-radius: 9px;
+      background: linear-gradient(90deg,#5ddcff 0%,#3c67e3 100%);
+      color: #fff;
+      box-shadow: 0 2px 12px 0 #5ddcff55;
+      cursor: pointer;
+      transition: filter 0.15s;
+      display: block;
+    }
+    @media (max-width: 600px){
+      #gameCanvas { width: 94vw; height: 60vw; max-width: 390px; max-height: 260px;}
+      #back-home { top: 10px; left: 10px; padding: 0.6em 1.1em; font-size: 0.97em;}
+      #restartBtn { left: 10px; top: 56px;}
+    }
+  </style>
+</head>
+<body>
+  <button id="back-home" onclick="window.location.href='https://oreofdev.github.io/Sw1ftSync/'">&larr; Voltar para Home</button>
+  <button id="restartBtn">Reiniciar</button>
+  <div class="container">
+    <div id="score">Pressione espaço ou toque para começar</div>
+    <canvas id="gameCanvas" width="380" height="540"></canvas>
+  </div>
+  <script>
+    // Motivo: Botão "Reiniciar" agora fica embaixo do botão "Voltar para Home" (fixo topo-esquerdo, logo abaixo do voltar)
+
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDiv = document.getElementById('score');
+    const restartBtn = document.getElementById('restartBtn');
+
+    const BIRD_IMG_SRC = "https://img.poki-cdn.com/cdn-cgi/image/quality=78,width=1200,height=1200,fit=cover,f=png/5e0df231478aa0a331a4718d09dd91a2.png";
+    const BIRD_SIZE = 38;
+    let birdImg = new window.Image();
+    birdImg.src = BIRD_IMG_SRC;
+
+    let bird = { x: 70, y: 220, vy: 0, gravity: 0.44, jump: -5.2, size: BIRD_SIZE };
+    let pipes = [];
+    let pipeW = 54, pipeGap = 210, pipeSpeed = 2.4;
+    let score = 0, bestScore = 0, gameOver = false, started = false;
+    let animationId = null;
+
+    function resetGame() {
+      bird.y = 220; bird.vy = 0;
+      pipes = [];
+      score = 0;
+      gameOver = false;
+      started = false;
+      scoreDiv.innerText = "Pressione espaço ou toque para começar";
+      restartBtn.style.display = "none";
+      draw();
+    }
+
+    function startGame() {
+      if (!started) {
+        started = true;
+        scoreDiv.innerText = "Score: 0";
+        pipes = [];
+        bird.vy = 0;
+        score = 0;
+        gameOver = false;
+        restartBtn.style.display = "none";
+        loop();
+      }
+    }
+
+    function jump() {
+      if (!gameOver) {
+        if (!started) startGame();
+        bird.vy = bird.jump;
+      }
+    }
+
+    function loop() {
+      update();
+      draw();
+      if (!gameOver) {
+        animationId = requestAnimationFrame(loop);
+      }
+    }
+
+    function update() {
+      bird.vy += bird.gravity;
+      bird.y += bird.vy;
+
+      for (let i = 0; i < pipes.length; i++) {
+        pipes[i].x -= pipeSpeed;
+      }
+      if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 135) {
+        let h = 60 + Math.random() * (canvas.height - pipeGap - 120);
+        pipes.push({
+          x: canvas.width,
+          y: h,
+          passed: false
+        });
+      }
+      if (pipes.length > 0 && pipes[0].x < -pipeW) pipes.shift();
+
+      for (let pipe of pipes) {
+        if (!pipe.passed && pipe.x + pipeW < bird.x) {
+          score++; pipe.passed = true;
+          scoreDiv.innerText = "Score: " + score + (bestScore ? "  |  Melhor: " + bestScore : "");
+        }
+        if (
+          bird.x + BIRD_SIZE > pipe.x && bird.x < pipe.x + pipeW &&
+          (bird.y < pipe.y || bird.y + BIRD_SIZE > pipe.y + pipeGap)
+        ) {
+          endGame();
+        }
+      }
+      if (bird.y < 0 || bird.y + BIRD_SIZE > canvas.height) endGame();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#44a047";
+      for (let pipe of pipes) {
+        ctx.fillRect(pipe.x, 0, pipeW, pipe.y);
+        ctx.fillRect(pipe.x, pipe.y + pipeGap, pipeW, canvas.height - pipe.y - pipeGap);
+      }
+      ctx.save();
+      ctx.translate(bird.x + BIRD_SIZE/2, bird.y + BIRD_SIZE/2);
+      ctx.rotate(Math.PI/12 * (bird.vy/4));
+      ctx.drawImage(birdImg, -BIRD_SIZE/2, -BIRD_SIZE/2, BIRD_SIZE, BIRD_SIZE);
+      ctx.restore();
+      ctx.fillStyle = "#8d6e63";
+      ctx.fillRect(0, canvas.height-24, canvas.width, 24);
+    }
+
+    function endGame() {
+      if (!gameOver) {
+        gameOver = true;
+        cancelAnimationFrame(animationId);
+        bestScore = Math.max(bestScore, score);
+        scoreDiv.innerHTML = `<span style="color:#d32f2f">Game Over</span><br>Score: ${score}  ${bestScore ? "| Melhor: " + bestScore : ""}`;
+        restartBtn.style.display = "inline-block";
+      }
+    }
+
+    document.addEventListener('keydown', function(e){
+      if (e.code === "Space" || e.key === " " || e.key === "ArrowUp" || e.key === "w") {
+        jump();
+        e.preventDefault();
+      }
+      if (e.code === "Enter" && gameOver) resetGame();
+    });
+    canvas.addEventListener('touchstart', function(e){
+      jump();
+      e.preventDefault();
+    });
+    canvas.addEventListener('mousedown', jump);
+    restartBtn.addEventListener('click', resetGame);
+
+    function resizeCanvas() {
+      if(window.innerWidth < 600){
+        canvas.width = Math.min(390, window.innerWidth*0.94);
+        canvas.height = Math.round(canvas.width * 1.4);
+      } else {
+        canvas.width = 380;
+        canvas.height = 540;
+      }
+      draw();
+    }
+    window.addEventListener('resize', resizeCanvas);
+
+    birdImg.onload = function(){
+      resizeCanvas();
+      draw();
+    };
+    resizeCanvas();
+    draw();
+  </script>
+</body>
+</html>
