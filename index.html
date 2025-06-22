@@ -527,6 +527,7 @@
         <button class="sidebar-btn" id="tab-loadstring" data-category="loadstring">Loadstring</button>
         <button class="sidebar-btn" id="tab-influencers" data-category="influencers">Influencers</button>
         <button class="sidebar-btn" id="tab-flappybird" data-category="flappybird">FlappyBird</button>
+        <button class="sidebar-btn" id="tab-tuxcards" data-category="tuxcards">Tux Cards</button>
       </div>
     </nav>
     <main>
@@ -606,6 +607,7 @@
     const tabLoadstringBtn = document.getElementById('tab-loadstring');
     const tabInfluencersBtn = document.getElementById('tab-influencers');
     const tabFlappyBirdBtn = document.getElementById('tab-flappybird');
+    const tabTuxCardsBtn = document.getElementById('tab-tuxcards');
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     const tabContentLoadstring = document.getElementById('tab-content-loadstring');
     const loadstringForm = document.getElementById('loadstring-form');
@@ -678,6 +680,10 @@
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/FlappyBird/';
         return;
       }
+      if (category === 'tuxcards') {
+        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/tuxcards';
+        return;
+      }
       // INFLUENCERS: REDIRECIONA PRA PÁGINA
       if (category === 'influencers') {
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Influencers/';
@@ -697,6 +703,7 @@
     tabLoadstringBtn.addEventListener('click', () => showCategory('loadstring'));
     tabInfluencersBtn.addEventListener('click', () => showCategory('influencers'));
     tabFlappyBirdBtn.addEventListener('click', () => showCategory('flappybird'));
+    tabTuxCardsBtn.addEventListener('click', () => showCategory('tuxcards'));
 
     loadstringForm.addEventListener('submit', function(e) {
       e.preventDefault();
