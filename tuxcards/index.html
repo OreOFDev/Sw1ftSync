@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tux Cards - Jogo de Cartas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0a0a0f;
+      --accent: #00d4ff;
+      --accent-secondary: #7c3aed;
+      --accent-gradient: linear-gradient(135deg, #00d4ff 0%, #7c3aed 50%, #f093fb 100%);
+      --accent-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #00d4ff 50%, #f093fb 100%);
+      
+      --glass-bg: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      --card-glow: 0 8px 32px rgba(0, 212, 255, 0.15), 0 4px 16px rgba(0, 0, 0, 0.2);
+      
+      --text-main: #ffffff;
+      --text-muted: #a3b1c6;
+      
+      --card-radius: 20px;
+      --button-radius: 12px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      --red: #ff4757;
+      --blue: #3742fa;
+      --green: #2ed573;
+      --black: #2f3542;
+      --yellow: #ffa502;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--primary);
+      color: var(--text-main);
+      min-height: 100vh;
+      scroll-behavior: smooth;
+      overflow-x: hidden;
+    }
+
+    body {
+      background: 
+        radial-gradient(ellipse at 20% 20%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(240, 147, 251, 0.05) 0%, transparent 70%),
+        linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: 
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Ccircle cx='30' cy='30' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(22, 27, 34, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem;
+      z-index: 9;
+      box-shadow: 0 4px 32px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--accent-gradient);
+      opacity: 0.3;
+    }
+
+    .brand {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      margin: 0;
+      user-select: none;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .brand img {
+      height: 50px;
+      width: auto;
+    }
+
+    .brand::after {
+      display: none;
+    }
+
+    .game-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0.5rem 1rem;
+      gap: 1rem;
+    }
+
+    .game-board {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      max-width: 1200px;
+      width: 100%;
+    }
+
+    .game-info {
+      display: none;
+    }
+
+    .current-player {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-align: center;
+      min-height: 1.5em; /* Reserve space to prevent layout shift */
+    }
+
+    .game-status {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .status-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-value {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .table-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--card-radius);
+      padding: 3rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      min-width: 300px;
+    }
+
+    .deck {
+      position: relative;
+      width: 120px;
+      height: 180px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 12px;
+      border: 2px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .deck:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .deck::before {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      right: 5px;
+      bottom: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+    }
+
+    .current-card {
+      width: 120px;
+      height: 180px;
+      border-radius: 12px;
+      border: 2px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: white;
+      position: relative;
+      transition: all var(--transition);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .current-card.red { background: var(--red); }
+    .current-card.blue { background: var(--blue); }
+    .current-card.green { background: var(--green); }
+    .current-card.black { background: var(--black); }
+    .current-card.yellow { background: var(--yellow); }
+
+    .player-hand {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      max-width: 100%;
+      padding: 1rem;
+    }
+
+    .card {
+      width: 80px;
+      height: 120px;
+      border-radius: 8px;
+      border: 2px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      user-select: none;
+    }
+
+    .card:hover {
+      transform: translateY(-10px) scale(1.05);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    .card.playable {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .card.red { background: var(--red); }
+    .card.blue { background: var(--blue); }
+    .card.green { background: var(--green); }
+    .card.black { background: var(--black); }
+    .card.yellow { background: var(--yellow); }
+
+    .card.special {
+      font-size: 1rem;
+    }
+
+    .game-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      border-radius: var(--button-radius);
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all var(--transition);
+      box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: var(--accent-gradient-hover);
+      transition: left var(--transition);
+      z-index: -1;
+    }
+
+    .btn:hover::before {
+      left: 0;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(0, 212, 255, 0.4);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      background: #555; /* A more distinct disabled style */
+      box-shadow: none;
+    }
+
+    .btn:disabled:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    .modal-content {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--card-radius);
+      padding: 2rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+    }
+
+    .modal h2 {
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    .modal p {
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .ai-players {
+      display: flex;
+      gap: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .ai-player {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--card-radius);
+      padding: 1.5rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      min-width: 150px;
+    }
+
+    .ai-player.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+    }
+
+    .ai-player-name {
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .ai-player-cards {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .ai-card {
+      width: 30px;
+      height: 45px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .game-over {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      backdrop-filter: blur(20px);
+    }
+
+    .game-over-content {
+      background: var(--glass-bg);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: var(--card-radius);
+      padding: 3rem;
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-shadow);
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+    }
+
+    .game-over h1 {
+      color: var(--accent);
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .game-over p {
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .game-info {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .game-status {
+        gap: 1rem;
+      }
+
+      .table-center {
+        padding: 2rem;
+      }
+
+      .player-hand {
+        gap: 0.5rem;
+      }
+
+      .card {
+        width: 60px;
+        height: 90px;
+        font-size: 1.2rem;
+      }
+
+      .ai-players {
+        gap: 1rem;
+      }
+
+      .ai-player {
+        min-width: 120px;
+        padding: 1rem;
+      }
+
+      .brand {
+        font-size: 2rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .game-container {
+        padding: 1rem;
+      }
+
+      .card {
+        width: 50px;
+        height: 75px;
+        font-size: 1rem;
+      }
+
+      .deck, .current-card {
+        width: 100px;
+        height: 150px;
+        font-size: 1.5rem;
+      }
+    }
+
+    .notification {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--accent-gradient);
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: var(--button-radius);
+      z-index: 2000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+      box-shadow: var(--glass-shadow);
+    }
+
+    .notification.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <div id="notification" class="notification"></div>
+  <header>
+    <div class="brand">
+      <img src="https://media.discordapp.net/attachments/1381686354995576882/1386422100499370116/tux.png?ex=6859a5b3&is=68585433&hm=1048043bce07685ced4f1289e2c83ab4f033e8c9842ad2b5596b105db6e94392&=&format=webp&quality=lossless&width=623&height=567" alt="Tux Logo" />
+      Tux Cards
+    </div>
+  </header>
+
+  <div class="game-container">
+    <div class="game-board">
+      <div class="game-info">
+        <div class="current-player" id="current-player"></div>
+        <div class="game-status">
+          <div class="status-item">
+            <div class="status-value" id="deck-count">108</div>
+          </div>
+          <div class="status-item">
+            <div class="status-value" id="player-cards">7</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ai-players" id="ai-players">
+        <!-- AI players will be added here -->
+      </div>
+
+      <div class="table-center">
+        <div class="current-card" id="current-card">
+          <span></span>
+        </div>
+        <div class="game-controls">
+          <button class="btn" id="draw-btn">Comprar Carta</button>
+          <button class="btn" id="tux-btn">TUX!</button>
+          <button class="btn" id="rules-btn">Regras</button>
+          <button class="btn" id="new-game-btn">Novo Jogo</button>
+        </div>
+      </div>
+
+      <div class="player-hand" id="player-hand">
+        <!-- Player cards will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <div class="modal" id="rules-modal" style="display: none;">
+    <div class="modal-content">
+      <h2>📖 Regras do Tux Cards</h2>
+      <div style="text-align: left; max-height: 400px; overflow-y: auto;">
+        <h3>🎯 Objetivo</h3>
+        <p>Seja o primeiro jogador a ficar sem cartas na mão.</p>
+        
+        <h3>🎮 Como Jogar</h3>
+        <p><strong>Cartas Numéricas:</strong> Jogue uma carta da mesma cor ou número da carta na mesa. Cartas do mesmo número mudam a cor da mesa.</p>
+        <p><strong>Sequência Numérica:</strong> Você pode jogar cartas em sequência: 0→1, 1→2, 2→3, etc.</p>
+        
+        <h3>🃏 Cartas Especiais</h3>
+        <p><strong>Flamengo:</strong> Anula qualquer carta especial recebida. Use imediatamente após receber um efeito.</p>
+        <p><strong>Troca de Mão:</strong> Troca todas as suas cartas com o próximo jogador.</p>
+        <p><strong>Arch:</strong> Desafie um oponente com uma pergunta.</p>
+        <p><strong>Nyan Cat:</strong> Veja as cartas de um jogador.</p>
+        <p><strong>Kali:</strong> Dê uma carta sua para um oponente.</p>
+        
+        <h3>⚠️ Regras Importantes</h3>
+        <p><strong>TUX!</strong> Quando tiver apenas 1 carta, clique no botão "TUX!". Se jogar sua última carta sem ter clicado, você perde.</p>
+        <p><strong>Cartas Especiais:</strong> Podem ser jogadas a qualquer momento e assumem a cor preta.</p>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn" onclick="closeModal('rules-modal')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="flamengo-modal" style="display: none;">
+    <div class="modal-content">
+      <h2>🃏 Carta Flamengo</h2>
+      <p>Você recebeu o efeito de uma carta especial! Use a carta Flamengo para anular este efeito?</p>
+      <div class="modal-buttons">
+        <button class="btn" onclick="useFlamengo()">Usar Flamengo</button>
+        <button class="btn" onclick="closeModal('flamengo-modal')">Aceitar Efeito</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="nyan-view-modal" style="display: none;">
+    <div class="modal-content">
+      <h2 id="nyan-view-title">Cartas da IA</h2>
+      <div class="player-hand" id="nyan-view-hand">
+        <!-- AI cards will be rendered here -->
+      </div>
+      <div class="modal-buttons">
+        <button class="btn" onclick="closeNyanViewModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="kali-card-modal" style="display: none;">
+    <div class="modal-content">
+      <h2>🎴 Escolha uma carta para doar</h2>
+      <div class="player-hand" id="kali-cards">
+        <!-- Player cards will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <div class="game-over" id="game-over" style="display: none;">
+    <div class="game-over-content">
+      <h1 id="winner-text">🎉 Vitória!</h1>
+      <p id="winner-description">Parabéns! Você venceu o jogo!</p>
+      <div class="modal-buttons">
+        <button class="btn" onclick="startNewGame()">Novo Jogo</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class TuxCardsGame {
+      constructor() {
+        this.deck = [];
+        this.playerHand = [];
+        this.aiPlayers = [];
+        this.currentCard = null;
+        this.currentPlayer = 0; // 0 = player, 1+ = AI
+        this.direction = 1; // 1 = clockwise, -1 = counterclockwise
+        this.pendingEffect = null;
+        this.gameOver = false;
+        this.tuxSafe = false; // Player has called TUX safely
+        
+        this.initializeDeck();
+        this.initializePlayers();
+        this.startGame();
+      }
+
+      initializeDeck() {
+        const colors = ['red', 'blue', 'green', 'yellow'];
+        const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        
+        colors.forEach(color => {
+          numbers.forEach(number => {
+            this.deck.push({ type: 'number', color, number, value: number });
+            this.deck.push({ type: 'number', color, number, value: number });
+          });
+        });
+
+        const specialCards = [
+          { type: 'flamengo', name: 'Flamengo' },
+          { type: 'troca', name: 'Troca de Mão' },
+          { type: 'arch', name: 'Arch' },
+          { type: 'nyan', name: 'Nyan Cat' },
+          { type: 'kali', name: 'Kali' }
+        ];
+
+        specialCards.forEach(card => {
+          for(let i=0; i<2; i++) {
+            this.deck.push({ 
+              type: card.type, 
+              name: card.name, 
+              color: 'black', 
+              value: 'special' 
+            });
+          }
+        });
+        
+        this.shuffleDeck();
+      }
+
+      shuffleDeck() {
+        for (let i = this.deck.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.deck[i], this.deck[j]] = [this.deck[j], this.deck[i]];
+        }
+      }
+
+      initializePlayers() {
+        this.playerHand = this.deck.splice(0, 7);
+        
+        this.aiPlayers = [{
+          name: 'IA',
+          hand: this.deck.splice(0, 7),
+          active: false
+        }];
+      }
+
+      startGame() {
+        do {
+          this.currentCard = this.deck.pop();
+          if (this.currentCard.value === 'special') {
+            this.deck.unshift(this.currentCard);
+            this.shuffleDeck();
+          }
+        } while (this.currentCard.value === 'special');
+        
+        this.updateUI();
+      }
+
+      drawCard() {
+        if (this.deck.length === 0) {
+            showNotification('O baralho acabou! O jogo empatou.');
+            setTimeout(startNewGame, 3000);
+            return;
+        }
+        
+        const card = this.deck.pop();
+        
+        if (this.currentPlayer === 0) {
+          this.playerHand.push(card);
+          
+          if (this.canPlayCard(card)) {
+            showNotification("Carta comprada é jogável! Jogando automaticamente...");
+            setTimeout(() => {
+                const cardIndex = this.playerHand.findIndex(c => c === card);
+                if (cardIndex !== -1) {
+                    this.playCard(cardIndex, true); // `true` to bypass TUX check on auto-play
+                }
+            }, 1500);
+          } else {
+            this.nextTurn();
+          }
+        } else {
+          this.aiPlayers[this.currentPlayer - 1].hand.push(card);
+          this.nextTurn();
+        }
+        this.updateUI();
+      }
+
+      canPlayCard(card) {
+        if (this.currentCard.value === 'special' || card.value === 'special') return true;
+        
+        return card.color === this.currentCard.color || 
+               card.number === this.currentCard.number ||
+               this.isSequential(card.number, this.currentCard.number);
+      }
+
+      isSequential(num1, num2) {
+        if (typeof num1 !== 'number' || typeof num2 !== 'number') return false;
+        return (num1 === num2 + 1) || (num1 === num2 - 1) || 
+               (num1 === 0 && num2 === 9) || (num1 === 9 && num2 === 0);
+      }
+
+      playCard(cardIndex, isAutoPlay = false) {
+        if (this.currentPlayer !== 0) return;
+
+        const card = this.playerHand[cardIndex];
+        
+        if (this.playerHand.length === 1 && !this.tuxSafe && !isAutoPlay) {
+            showNotification('Você esqueceu de gritar TUX! e perdeu o jogo.');
+            this.endGame('ai', 0);
+            return;
+        }
+        
+        if (!this.canPlayCard(card)) {
+            showNotification('Jogada inválida!');
+            return;
+        }
+        
+        this.playerHand.splice(cardIndex, 1);
+        this.currentCard = card;
+        
+        if (this.checkGameOver()) return;
+
+        if (card.value === 'special') {
+          this.handleSpecialCard(card);
+        } else {
+          this.nextTurn();
+        }
+        
+        this.updateUI();
+      }
+
+      handleSpecialCard(card) {
+        switch (card.type) {
+          case 'troca':
+            this.handleTrocaCard();
+            break;
+          case 'arch':
+            this.showArchModal();
+            break;
+          case 'nyan':
+            this.showNyanModal();
+            break;
+          case 'kali':
+            this.showKaliModal();
+            break;
+          default:
+            this.nextTurn();
+        }
+      }
+
+      handleTrocaCard() {
+        const temp = [...this.playerHand];
+        this.playerHand = [...this.aiPlayers[0].hand];
+        this.aiPlayers[0].hand = temp;
+        this.nextTurn();
+      }
+
+      nextTurn() {
+        this.currentPlayer = (this.currentPlayer + 1) % (this.aiPlayers.length + 1);
+        this.updateUI();
+        
+        if (this.currentPlayer > 0) {
+          setTimeout(() => this.aiTurn(), 1500);
+        }
+      }
+
+      aiTurn() {
+        const ai = this.aiPlayers[this.currentPlayer - 1];
+        
+        let playableIndex = -1;
+        for (let i = 0; i < ai.hand.length; i++) {
+          if (this.canPlayCard(ai.hand[i])) {
+            playableIndex = i;
+            if (ai.hand[i].value !== 'special') break; // Prioritize non-special cards
+          }
+        }
+        
+        if (playableIndex !== -1) {
+            const cardToPlay = ai.hand.splice(playableIndex, 1)[0];
+            this.currentCard = cardToPlay;
+            if (this.checkGameOver()) return;
+            
+            if (cardToPlay.value === 'special') {
+                // Simplified AI logic for special cards
+                this.nextTurn();
+            } else {
+                this.nextTurn();
+            }
+        } else {
+          this.drawCard();
+        }
+      }
+
+      checkGameOver() {
+        if (this.playerHand.length === 0) {
+          this.endGame('player');
+          return true;
+        } else if (this.aiPlayers.some(ai => ai.hand.length === 0)) {
+          const winner = this.aiPlayers.findIndex(ai => ai.hand.length === 0);
+          this.endGame('ai', winner);
+          return true;
+        }
+        return false;
+      }
+
+      endGame(winner, aiIndex = null) {
+        this.gameOver = true;
+        
+        if (winner === 'player') {
+          document.getElementById('winner-text').textContent = '🎉 Você Venceu!';
+          document.getElementById('winner-description').textContent = 'Parabéns! Você foi o primeiro a ficar sem cartas!';
+        } else {
+          const aiName = this.aiPlayers[aiIndex].name;
+          document.getElementById('winner-text').textContent = '😔 Você Perdeu!';
+          document.getElementById('winner-description').textContent = `${aiName} venceu o jogo!`;
+        }
+        
+        document.getElementById('game-over').style.display = 'flex';
+      }
+
+      updateUI() {
+        const currentCardEl = document.getElementById('current-card');
+        currentCardEl.className = `current-card ${this.currentCard.color}`;
+        if (this.currentCard.value === 'special') {
+          currentCardEl.innerHTML = `<span style="font-size: 1.2rem; padding: 5px; text-align: center; line-height: 1.2;">${this.currentCard.name}</span>`;
+        } else {
+          currentCardEl.innerHTML = `<span>${this.currentCard.number}</span>`;
+        }
+        
+        this.updatePlayerHand();
+        this.updateAIPlayers();
+        this.updateTuxState();
+      }
+
+      updateTuxState() {
+        const tuxBtn = document.getElementById('tux-btn');
+        if (this.playerHand.length !== 1) {
+            this.tuxSafe = false;
+        }
+        
+        tuxBtn.disabled = (this.playerHand.length !== 1 || this.tuxSafe);
+      }
+
+      updatePlayerHand() {
+        const playerHand = document.getElementById('player-hand');
+        playerHand.innerHTML = '';
+        
+        this.playerHand.forEach((card, index) => {
+          const cardEl = document.createElement('div');
+          cardEl.className = `card ${card.color}`;
+          if (this.currentPlayer === 0 && this.canPlayCard(card)) {
+              cardEl.classList.add('playable');
+          }
+
+          if (card.value === 'special') {
+            cardEl.innerHTML = `<span style="font-size: 0.8rem; padding: 5px; text-align: center; line-height: 1.2;">${card.name}</span>`;
+          } else {
+            cardEl.innerHTML = `<span>${card.number}</span>`;
+          }
+          
+          cardEl.onclick = () => this.playCard(index);
+          playerHand.appendChild(cardEl);
+        });
+      }
+
+      updateAIPlayers() {
+        const aiPlayersEl = document.getElementById('ai-players');
+        aiPlayersEl.innerHTML = '';
+        
+        this.aiPlayers.forEach((ai, index) => {
+          const aiEl = document.createElement('div');
+          aiEl.className = `ai-player`;
+          if (this.currentPlayer === index + 1) {
+            aiEl.classList.add('active');
+          }
+          
+          aiEl.innerHTML = `
+            <div class="ai-player-name">${ai.name} (${ai.hand.length})</div>
+            <div class="ai-player-cards">
+              ${Array(ai.hand.length).fill('<div class="ai-card"></div>').join('')}
+            </div>
+          `;
+          
+          aiPlayersEl.appendChild(aiEl);
+        });
+      }
+
+      showArchModal() {
+        this.handleArchTarget(0);
+      }
+
+      showNyanModal() {
+        this.handleNyanTarget(0);
+      }
+
+      showKaliModal() {
+        this.handleKaliTarget(0);
+      }
+
+      handleArchTarget(aiIndex) {
+        showNotification(`Você desafiou ${this.aiPlayers[aiIndex].name}! (Efeito simulado)`);
+        this.nextTurn();
+      }
+
+      handleNyanTarget(aiIndex) {
+        const ai = this.aiPlayers[aiIndex];
+        const nyanViewHand = document.getElementById('nyan-view-hand');
+        const nyanViewTitle = document.getElementById('nyan-view-title');
+
+        nyanViewTitle.textContent = `Cartas de ${ai.name}`;
+        nyanViewHand.innerHTML = '';
+
+        ai.hand.forEach(card => {
+            const cardEl = document.createElement('div');
+            cardEl.className = `card ${card.color}`;
+
+            if (card.value === 'special') {
+                cardEl.innerHTML = `<span style="font-size: 0.8rem; padding: 5px; text-align: center; line-height: 1.2;">${card.name}</span>`;
+            } else {
+                cardEl.innerHTML = `<span>${card.number}</span>`;
+            }
+            nyanViewHand.appendChild(cardEl);
+        });
+
+        document.getElementById('nyan-view-modal').style.display = 'flex';
+      }
+
+      handleKaliTarget(aiIndex) {
+        this.showKaliCardModal(aiIndex);
+      }
+
+      showKaliCardModal(aiIndex) {
+        const kaliCards = document.getElementById('kali-cards');
+        kaliCards.innerHTML = '';
+        
+        this.playerHand.forEach((card, index) => {
+          const cardEl = document.createElement('div');
+          cardEl.className = `card ${card.color}`;
+          if (card.value === 'special') {
+            cardEl.innerHTML = `<span style="font-size: 0.8rem; padding: 5px; text-align: center;">${card.name}</span>`;
+          } else {
+            cardEl.innerHTML = `<span>${card.number}</span>`;
+          }
+          
+          cardEl.onclick = () => {
+            this.giveCardToAI(index, aiIndex);
+            closeModal('kali-card-modal');
+          };
+          kaliCards.appendChild(cardEl);
+        });
+        
+        document.getElementById('kali-card-modal').style.display = 'flex';
+      }
+
+      giveCardToAI(cardIndex, aiIndex) {
+        if(this.playerHand.length <= 1) {
+            showNotification("Você não pode doar sua última carta!");
+            return;
+        }
+        const card = this.playerHand.splice(cardIndex, 1)[0];
+        this.aiPlayers[aiIndex].hand.push(card);
+        this.nextTurn();
+        this.updateUI();
+      }
+    }
+
+    let game;
+    
+    function closeNyanViewModal() {
+      closeModal('nyan-view-modal');
+      if (game) {
+        game.nextTurn();
+      }
+    }
+
+    function showNotification(message, duration = 3000) {
+      const notification = document.getElementById('notification');
+      if (!notification) return;
+
+      notification.textContent = message;
+      notification.classList.add('show');
+
+      setTimeout(() => {
+          notification.classList.remove('show');
+      }, duration);
+    }
+
+    function startNewGame() {
+      document.getElementById('game-over').style.display = 'none';
+      game = new TuxCardsGame();
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function useFlamengo() {
+      closeModal('flamengo-modal');
+      game.nextTurn();
+    }
+
+    document.getElementById('draw-btn').addEventListener('click', () => {
+      if (game && !game.gameOver && game.currentPlayer === 0) {
+        game.drawCard();
+      }
+    });
+
+    document.getElementById('tux-btn').addEventListener('click', () => {
+      if (game && !game.gameOver && game.playerHand.length === 1) {
+        game.tuxSafe = true;
+        showNotification('TUX!');
+        game.updateTuxState(); // Visually disable the button
+      }
+    });
+
+    document.getElementById('rules-btn').addEventListener('click', () => {
+      document.getElementById('rules-modal').style.display = 'flex';
+    });
+
+    document.getElementById('new-game-btn').addEventListener('click', startNewGame);
+
+    startNewGame();
+  </script>
+</body>
+</html>
