@@ -598,6 +598,29 @@
       text-align: center;
       animation: pulse 2s infinite;
     }
+
+    .arch-options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .arch-option {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--button-radius);
+      padding: 0.8rem 1rem;
+      cursor: pointer;
+      transition: all var(--transition);
+      text-align: left;
+    }
+
+    .arch-option:hover {
+      background: var(--accent);
+      color: white;
+      transform: translateY(-2px);
+    }
   </style>
 </head>
 <body>
@@ -666,7 +689,7 @@
         <h3>🃏 Cartas Especiais</h3>
         <p><strong>Flamengo:</strong> Anula qualquer carta especial recebida. Use imediatamente após receber um efeito.</p>
         <p><strong>Troca de Mão:</strong> Troca todas as suas cartas com o próximo jogador.</p>
-        <p><strong>Arch:</strong> Desafie um oponente com uma pergunta.</p>
+        <p><strong>Arch:</strong> Desafie um oponente com uma pergunta. Se acertar, o oponente compra 2 cartas. Se errar, você compra 2 cartas.</p>
         <p><strong>Nyan Cat:</strong> Veja as cartas de um jogador.</p>
         <p><strong>Kali:</strong> Dê uma carta sua para um oponente.</p>
         <p><strong>2 Penguins (+2):</strong> O próximo jogador deve comprar 2 cartas OU jogar +2/+4 para aumentar o penalty.</p>
@@ -708,9 +731,22 @@
 
   <div class="modal" id="kali-card-modal" style="display: none;">
     <div class="modal-content">
-      <h2>🎴 Escolha uma carta para doar</h2>
+      <h2>🎴 Escolha uma carta para doar para a IA</h2>
       <div class="player-hand" id="kali-cards">
         <!-- Player cards will be added here -->
+      </div>
+    </div>
+  </div>
+
+  <div class="modal" id="arch-question-modal" style="display: none;">
+    <div class="modal-content">
+      <h2>🤔 Desafio Arch</h2>
+      <p id="arch-question-text">Pergunta aqui...</p>
+      <div id="arch-options" class="arch-options">
+        <!-- Options will be added here -->
+      </div>
+      <div class="modal-buttons" style="margin-top: 1rem;">
+        <button class="btn" onclick="closeModal('arch-question-modal')">Cancelar</button>
       </div>
     </div>
   </div>
@@ -738,6 +774,25 @@
         this.gameOver = false;
         this.tuxSafe = false; // Player has called TUX safely
         this.penaltyStack = 0; // Track current penalty (+2/+4 stack)
+        
+        // Arch questions system
+        this.archQuestions = [
+          {
+            question: "Qual é o maior animal do mundo?",
+            answer: "Baleia-azul",
+            options: ["Elefante", "Baleia-azul", "Girafa", "Rinoceronte"]
+          },
+          {
+            question: "Qual é a capital do Brasil?",
+            answer: "Brasília",
+            options: ["São Paulo", "Rio de Janeiro", "Brasília", "Salvador"]
+          },
+          {
+            question: "Quantos planetas existem no sistema solar?",
+            answer: "8",
+            options: ["7", "8", "9", "10"]
+          }
+        ];
         
         this.initializeDeck();
         this.initializePlayers();
@@ -918,6 +973,13 @@
       }
 
       handleSpecialCard(card) {
+        // Check if this is AI playing the card
+        if (this.currentPlayer > 0) {
+          this.handleAISpecialCard(card);
+          return;
+        }
+        
+        // Player playing special card
         switch (card.type) {
           case 'troca':
             this.handleTrocaCard();
@@ -930,6 +992,50 @@
             break;
           case 'kali':
             this.showKaliModal();
+            break;
+          case 'penguin2':
+            this.handlePenguin2Card();
+            break;
+          case 'penguin4':
+            this.handlePenguin4Card();
+            break;
+          default:
+            this.nextTurn();
+        }
+      }
+
+      handleAISpecialCard(card) {
+        const ai = this.aiPlayers[this.currentPlayer - 1];
+        
+        switch (card.type) {
+          case 'troca':
+            // AI trades hands with player
+            const temp = [...this.playerHand];
+            this.playerHand = [...ai.hand];
+            ai.hand = temp;
+            showNotification(`${ai.name} trocou as cartas com você!`);
+            this.nextTurn();
+            break;
+          case 'arch':
+            // AI challenges player with a question
+            this.showArchQuestion();
+            break;
+          case 'nyan':
+            // AI looks at player's cards
+            showNotification(`${ai.name} viu suas cartas!`);
+            this.nextTurn();
+            break;
+          case 'kali':
+            // AI gives a card to player
+            if (ai.hand.length > 1) {
+              const randomIndex = Math.floor(Math.random() * ai.hand.length);
+              const cardToGive = ai.hand.splice(randomIndex, 1)[0];
+              this.playerHand.push(cardToGive);
+              showNotification(`${ai.name} te deu uma carta!`);
+            } else {
+              showNotification(`${ai.name} não pode doar sua última carta!`);
+            }
+            this.nextTurn();
             break;
           case 'penguin2':
             this.handlePenguin2Card();
@@ -1161,8 +1267,8 @@
       }
 
       handleArchTarget(aiIndex) {
-        showNotification(`Você desafiou ${this.aiPlayers[aiIndex].name}! (Efeito simulado)`);
-        this.nextTurn();
+        // Player challenges AI with a question
+        this.showArchQuestion();
       }
 
       handleNyanTarget(aiIndex) {
@@ -1189,6 +1295,7 @@
       }
 
       handleKaliTarget(aiIndex) {
+        // Player is giving a card to AI
         this.showKaliCardModal(aiIndex);
       }
 
@@ -1246,6 +1353,63 @@
           if (penaltyWarning) penaltyWarning.style.display = 'none';
         }
       }
+
+      showArchQuestion() {
+        // Select a random question
+        const randomIndex = Math.floor(Math.random() * this.archQuestions.length);
+        const questionData = this.archQuestions[randomIndex];
+        
+        // Store the current question for answer checking
+        this.currentArchQuestion = questionData;
+        
+        // Show the question modal
+        const questionText = document.getElementById('arch-question-text');
+        const optionsContainer = document.getElementById('arch-options');
+        
+        questionText.textContent = questionData.question;
+        optionsContainer.innerHTML = '';
+        
+        // Create option buttons
+        questionData.options.forEach(option => {
+          const optionEl = document.createElement('div');
+          optionEl.className = 'arch-option';
+          optionEl.textContent = option;
+          optionEl.onclick = () => {
+            const isCorrect = option === questionData.answer;
+            this.handleArchAnswer(isCorrect);
+          };
+          optionsContainer.appendChild(optionEl);
+        });
+        
+        document.getElementById('arch-question-modal').style.display = 'flex';
+      }
+
+      handleArchAnswer(isCorrect) {
+        const ai = this.aiPlayers[this.currentPlayer - 1];
+        
+        if (isCorrect) {
+          showNotification(`Parabéns! Você acertou! ${ai.name} compra 2 cartas.`);
+          // AI draws 2 cards as penalty
+          for (let i = 0; i < 2; i++) {
+            if (this.deck.length > 0) {
+              ai.hand.push(this.deck.pop());
+            }
+          }
+        } else {
+          showNotification(`Você errou! Você compra 2 cartas.`);
+          // Player draws 2 cards as penalty
+          for (let i = 0; i < 2; i++) {
+            if (this.deck.length > 0) {
+              this.playerHand.push(this.deck.pop());
+            }
+          }
+        }
+        
+        // Close modal and continue
+        closeModal('arch-question-modal');
+        this.nextTurn();
+        this.updateUI();
+      }
     }
 
     let game;
@@ -1284,6 +1448,12 @@
     function useFlamengo() {
       closeModal('flamengo-modal');
       game.nextTurn();
+    }
+
+    function answerArchQuestion(isCorrect) {
+      if (game) {
+        game.handleArchAnswer(isCorrect);
+      }
     }
 
     document.getElementById('draw-btn').addEventListener('click', () => {
