@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tux Obfuscator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #202020;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(45deg, #0066cc, #0099ff);
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px;
+            background: url('https://media.discordapp.net/attachments/1381699325528113232/1386489816312713286/tux.png?ex=6859e4c3&is=68589343&hm=c0bc85bc495f6a3cff13a3ceed1eb034693af58e390cde72d70c861c31792436&=&format=webp&quality=lossless&width=623&height=567') center/cover;
+            border-radius: 50%;
+            border: 3px solid #00ccff;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ccff;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+        }
+
+        .controls {
+            padding: 20px;
+            text-align: center;
+            background: #1a1a1a;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-obfuscate {
+            background: linear-gradient(45deg, #0066cc, #0099ff);
+            color: white;
+        }
+
+        .btn-obfuscate:hover {
+            background: linear-gradient(45deg, #0099ff, #00ccff);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 204, 255, 0.3);
+        }
+
+        .btn-clear {
+            background: linear-gradient(45deg, #770000, #aa0000);
+            color: white;
+        }
+
+        .btn-clear:hover {
+            background: linear-gradient(45deg, #aa0000, #ff0000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+        }
+
+        .editors {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .editor-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .editor-label {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #00ccff;
+            text-align: center;
+        }
+
+        .editor {
+            flex: 1;
+            background: #1e1e1e;
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+            padding: 12px;
+            resize: none;
+            outline: none;
+            transition: border-color 0.3s ease;
+            min-height: 200px;
+            max-height: 250px;
+        }
+
+        .editor:focus {
+            border-color: #00ccff;
+            box-shadow: 0 0 10px rgba(0, 204, 255, 0.3);
+        }
+
+        .editor-original {
+            color: #ffffff;
+        }
+
+        .editor-obfuscated {
+            color: #00ccff;
+        }
+
+        .status {
+            padding: 15px;
+            text-align: center;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+        }
+
+        .status.success {
+            color: #00ccff;
+            background: rgba(0, 204, 255, 0.1);
+        }
+
+        .status.error {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+        }
+
+        .status.warning {
+            color: #ffd93d;
+            background: rgba(255, 217, 61, 0.1);
+        }
+
+        .credits {
+            padding: 20px;
+            text-align: center;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            color: #888;
+            font-size: 12px;
+        }
+
+        .credits a {
+            color: #00ccff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .credits a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .editors {
+                flex-direction: column;
+            }
+            
+            .btn {
+                margin: 5px;
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo"></div>
+            <div class="title">Tux Obfuscator</div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-obfuscate" onclick="obfuscateCode()">Obfuscar</button>
+            <button class="btn btn-clear" onclick="clearAll()">Limpar</button>
+        </div>
+
+        <div class="editors">
+            <div class="editor-section">
+                <div class="editor-label">Código Original</div>
+                <textarea id="originalCode" class="editor editor-original" placeholder="-- COLOQUE SEU SCRIPT NAO OBFUSCADO AQUI E CLIQUE OBFUSCAR"></textarea>
+            </div>
+            <div class="editor-section">
+                <div class="editor-label">Código Obfuscado</div>
+                <textarea id="obfuscatedCode" class="editor editor-obfuscated" placeholder="O código ofuscado aparecerá aqui..." readonly></textarea>
+            </div>
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <div class="credits">
+        <p>Tux Obfuscator por <a href="https://www.youtube.com/@oRee-gg/videos" target="_blank">oRee Scripter</a></p>
+    </div>
+
+    <script>
+        class AdvancedLuaObfuscator {
+            constructor() {
+                this.usedNames = new Set();
+            }
+
+            chaoticName(length = 16) {
+                const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+                let name;
+                do {
+                    name = '_' + Array.from({length}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+                } while (this.usedNames.has(name));
+                this.usedNames.add(name);
+                return name;
+            }
+
+            encodeStrings(code) {
+                const strings = [];
+                const stringRegex = /"([^"]*)"/g;
+                
+                // Extrai todas as strings
+                code = code.replace(stringRegex, (match, str) => {
+                    if (!strings.includes(str)) {
+                        strings.push(str);
+                    }
+                    return `__DECODE_STR__${strings.indexOf(str)}__`;
+                });
+
+                const funcs = [];
+                const replaces = [];
+
+                // Cria funções de decodificação para cada string
+                strings.forEach((str, idx) => {
+                    const length = str.length;
+                    const keys = Array.from({length}, () => Math.floor(Math.random() * 150) + 50);
+                    const enc = str.split('').map((c, i) => c.charCodeAt(0) ^ keys[i]);
+                    enc.reverse();
+                    keys.reverse();
+                    
+                    const argsEnc = enc.join(',');
+                    const argsKeys = keys.join(',');
+                    const funcName = this.chaoticName();
+                    
+                    funcs.push(`
+local function ${funcName}()
+    local d,k,s={{ ${argsEnc} }},{{ ${argsKeys} }},{{}}
+    for i=1,#d do s[i]=string.char(bit32.bxor(d[#d-i+1],k[#k-i+1])) end
+    return table.concat(s)
+end`);
+                    
+                    replaces.push([funcName + '()', idx]);
+                });
+
+                // Substitui os placeholders pelas chamadas das funções
+                replaces.forEach(([call, i]) => {
+                    code = code.replace(`__DECODE_STR__${i}__`, call);
+                });
+
+                return [funcs.join('\n'), code];
+            }
+
+            renameLocals(code) {
+                // Encontra variáveis locais
+                const localRegex = /\blocal\s+(?:function\s+)?([a-zA-Z_][a-zA-Z0-9_]*)/g;
+                const locals = new Set();
+                let match;
+                while ((match = localRegex.exec(code)) !== null) {
+                    locals.add(match[1]);
+                }
+
+                // Encontra parâmetros de função
+                const paramRegex = /\bfunction\s*(?:[a-zA-Z_][a-zA-Z0-9_]*)?\s*\((.*?)\)/g;
+                const params = new Set();
+                while ((match = paramRegex.exec(code)) !== null) {
+                    const paramList = match[1];
+                    paramList.split(',').forEach(param => {
+                        const cleanParam = param.trim();
+                        if (cleanParam) params.add(cleanParam);
+                    });
+                }
+
+                const allNames = new Set([...locals, ...params]);
+                const blacklist = new Set([
+                    'game', 'script', 'math', 'string', 'table', 'bit32', 'pairs', 'ipairs',
+                    'coroutine', 'setmetatable', 'print', 'and', 'or', 'not', 'true', 'false',
+                    'nil', 'if', 'then', 'else', 'elseif', 'end', 'for', 'while', 'do',
+                    'local', 'function', 'return', 'repeat', 'until', 'break', 'goto',
+                    'self', 'Vector3', 'CFrame', 'Instance', 'Color3', 'UDim2', 'Enum'
+                ]);
+
+                const renameMap = new Map();
+                allNames.forEach(name => {
+                    if (!blacklist.has(name)) {
+                        renameMap.set(name, this.chaoticName());
+                    }
+                });
+
+                // Substitui os nomes (do maior para o menor para evitar conflitos)
+                const sortedNames = Array.from(renameMap.keys()).sort((a, b) => b.length - a.length);
+                sortedNames.forEach(name => {
+                    const newName = renameMap.get(name);
+                    const nameRegex = new RegExp(`\\b${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'g');
+                    code = code.replace(nameRegex, newName);
+                });
+
+                return code;
+            }
+
+            megaJunkBlock() {
+                const junkLines = [];
+                const numVars = Math.floor(Math.random() * 4) + 4;
+                const junkVars = Array.from({length: numVars}, () => this.chaoticName());
+
+                // Criação de variáveis com cálculos inúteis
+                for (let i = 0; i < numVars; i++) {
+                    junkLines.push(`local ${junkVars[i]} = (math.random(1, 10000) * ${i+1}) / (${Math.floor(Math.random() * 100) + 1} or 1)`);
+                }
+
+                // Criação de uma tabela lixo
+                const tblName = this.chaoticName();
+                junkLines.push(`local ${tblName} = {}`);
+                junkLines.push(`for i = 1, ${Math.floor(Math.random() * 6) + 5} do`);
+                junkLines.push(`    ${tblName}[i] = ${junkVars[Math.floor(Math.random() * numVars)]} + i`);
+                junkLines.push('end');
+
+                // Criação de uma função lixo interna
+                const innerFunc = this.chaoticName();
+                junkLines.push(`local function ${innerFunc}(a, b)`);
+                junkLines.push(`    if a > b then return a - b else return b - a end`);
+                junkLines.push('end');
+
+                // Envolve tudo em uma função externa que nunca é chamada
+                const outerFunc = this.chaoticName();
+                const junkBody = junkLines.join('\n    ');
+                return `
+local function ${outerFunc}()
+    ${junkBody}
+    return ${tblName}[1]
+end
+if false then ${outerFunc}() end`;
+            }
+
+            addJunk(code) {
+                const lines = code.split('\n');
+                const result = [];
+                
+                // Adiciona um bloco de mega lixo no início
+                result.push(this.megaJunkBlock());
+                
+                lines.forEach(line => {
+                    result.push(line);
+                    // 90% de chance de injetar um bloco massivo de lixo após cada linha real
+                    if (Math.random() < 0.90) {
+                        result.push(this.megaJunkBlock());
+                    }
+                });
+                
+                // Adiciona um bloco de mega lixo no final
+                result.push(this.megaJunkBlock());
+                
+                return result.join('\n');
+            }
+
+            obfuscate(code) {
+                const [decoder, encodedCode] = this.encodeStrings(code);
+                const renamedCode = this.renameLocals(encodedCode);
+                const junkedCode = this.addJunk(renamedCode);
+
+                return `--[[ Tux Obfuscator! ]]--\n\n${decoder}\n\n${junkedCode}\n`;
+            }
+        }
+
+        const obfuscator = new AdvancedLuaObfuscator();
+
+        function obfuscateCode() {
+            const originalCode = document.getElementById('originalCode').value.trim();
+            const statusDiv = document.getElementById('status');
+            
+            if (!originalCode) {
+                showStatus('Cole um código Lua.', 'warning');
+                return;
+            }
+
+            try {
+                const obfuscated = obfuscator.obfuscate(originalCode);
+                document.getElementById('obfuscatedCode').value = obfuscated;
+                showStatus('Código ofuscado com sucesso!', 'success');
+            } catch (error) {
+                showStatus(`Ocorreu um erro: ${error.message}`, 'error');
+            }
+        }
+
+        function clearAll() {
+            document.getElementById('originalCode').value = '-- COLOQUE SEU SCRIPT NAO OBFUSCADO AQUI E CLIQUE OBFUSCAR';
+            document.getElementById('obfuscatedCode').value = '';
+            showStatus('', '');
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+            
+            if (message) {
+                setTimeout(() => {
+                    statusDiv.textContent = '';
+                    statusDiv.className = 'status';
+                }, 3000);
+            }
+        }
+
+        // Inicialização
+        document.addEventListener('DOMContentLoaded', function() {
+            clearAll();
+        });
+    </script>
+</body>
+</html> 
