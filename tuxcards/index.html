@@ -298,6 +298,23 @@
       box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
     }
 
+    .card.penalty-playable {
+      border-color: var(--red);
+      box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+      animation: penalty-pulse 1.5s infinite;
+    }
+
+    @keyframes penalty-pulse {
+      0%, 100% { 
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.4);
+        transform: scale(1);
+      }
+      50% { 
+        box-shadow: 0 0 30px rgba(255, 71, 87, 0.6);
+        transform: scale(1.05);
+      }
+    }
+
     .card.red { background: var(--red); }
     .card.blue { background: var(--blue); }
     .card.green { background: var(--green); }
@@ -570,6 +587,17 @@
       visibility: visible;
       transform: translateX(-50%) translateY(0);
     }
+
+    .penalty-warning {
+      background: var(--red);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--button-radius);
+      font-weight: 600;
+      margin: 1rem 0;
+      text-align: center;
+      animation: pulse 2s infinite;
+    }
   </style>
 </head>
 <body>
@@ -595,6 +623,9 @@
           <div class="status-item" id="penalty-container" style="display: none;">
             <div class="penalty-indicator" id="penalty-value">+2</div>
           </div>
+        </div>
+        <div class="penalty-warning" id="penalty-warning" style="display: none;">
+          ⚠️ PENALTY ATIVO! Você só pode jogar +2/+4 ou usar Flamengo!
         </div>
       </div>
 
@@ -830,18 +861,15 @@
       }
 
       canPlayCard(card) {
-        if (this.currentCard.value === 'special' || card.value === 'special') {
-          // Special cards can always be played
-          if (card.type === 'penguin2' || card.type === 'penguin4') {
-            // +2/+4 cards can be played to stack on existing penalty
-            return true;
-          }
-          return true;
+        // If there's an active penalty, only +2/+4 and Flamengo cards can be played
+        if (this.penaltyStack > 0) {
+          return card.type === 'penguin2' || card.type === 'penguin4' || card.type === 'flamengo';
         }
         
-        // If there's an active penalty, only +2/+4 cards can be played
-        if (this.penaltyStack > 0) {
-          return card.type === 'penguin2' || card.type === 'penguin4';
+        // Normal card playing rules
+        if (this.currentCard.value === 'special' || card.value === 'special') {
+          // Special cards can always be played when no penalty is active
+          return true;
         }
         
         return card.color === this.currentCard.color || 
@@ -867,7 +895,11 @@
         }
         
         if (!this.canPlayCard(card)) {
-            showNotification('Jogada inválida!');
+            if (this.penaltyStack > 0) {
+                showNotification('Durante um penalty, você só pode jogar +2/+4 ou usar Flamengo!');
+            } else {
+                showNotification('Jogada inválida!');
+            }
             return;
         }
         
@@ -1074,8 +1106,13 @@
         this.playerHand.forEach((card, index) => {
           const cardEl = document.createElement('div');
           cardEl.className = `card ${card.color}`;
+          
           if (this.currentPlayer === 0 && this.canPlayCard(card)) {
+            if (this.penaltyStack > 0) {
+              cardEl.classList.add('penalty-playable');
+            } else {
               cardEl.classList.add('playable');
+            }
           }
 
           if (card.value === 'special') {
@@ -1194,16 +1231,19 @@
         const playerCardsEl = document.getElementById('player-cards');
         const penaltyContainer = document.getElementById('penalty-container');
         const penaltyValue = document.getElementById('penalty-value');
+        const penaltyWarning = document.getElementById('penalty-warning');
         
         if (deckCountEl) deckCountEl.textContent = this.deck.length;
         if (playerCardsEl) playerCardsEl.textContent = this.playerHand.length;
         
-        // Show/hide penalty indicator
+        // Show/hide penalty indicator and warning
         if (this.penaltyStack > 0) {
           if (penaltyContainer) penaltyContainer.style.display = 'flex';
           if (penaltyValue) penaltyValue.textContent = `+${this.penaltyStack}`;
+          if (penaltyWarning) penaltyWarning.style.display = 'block';
         } else {
           if (penaltyContainer) penaltyContainer.style.display = 'none';
+          if (penaltyWarning) penaltyWarning.style.display = 'none';
         }
       }
     }
