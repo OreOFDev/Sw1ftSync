@@ -177,6 +177,20 @@
       color: var(--text-main);
     }
 
+    .penalty-indicator {
+      background: var(--red);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: var(--button-radius);
+      font-weight: 600;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
     .table-center {
       display: flex;
       flex-direction: column;
@@ -578,6 +592,9 @@
           <div class="status-item">
             <div class="status-value" id="player-cards">7</div>
           </div>
+          <div class="status-item" id="penalty-container" style="display: none;">
+            <div class="penalty-indicator" id="penalty-value">+2</div>
+          </div>
         </div>
       </div>
 
@@ -621,10 +638,13 @@
         <p><strong>Arch:</strong> Desafie um oponente com uma pergunta.</p>
         <p><strong>Nyan Cat:</strong> Veja as cartas de um jogador.</p>
         <p><strong>Kali:</strong> Dê uma carta sua para um oponente.</p>
+        <p><strong>2 Penguins (+2):</strong> O próximo jogador deve comprar 2 cartas OU jogar +2/+4 para aumentar o penalty.</p>
+        <p><strong>4 Penguins (+4):</strong> O próximo jogador deve comprar 4 cartas OU jogar +4 para aumentar o penalty.</p>
         
         <h3>⚠️ Regras Importantes</h3>
         <p><strong>TUX!</strong> Quando tiver apenas 1 carta, clique no botão "TUX!". Se jogar sua última carta sem ter clicado, você perde.</p>
         <p><strong>Cartas Especiais:</strong> Podem ser jogadas a qualquer momento e assumem a cor preta.</p>
+        <p><strong>Stacking de Penalties:</strong> +2 e +4 podem ser acumulados. Se há um penalty ativo, você só pode jogar +2/+4 ou usar Flamengo.</p>
       </div>
       <div class="modal-buttons">
         <button class="btn" onclick="closeModal('rules-modal')">Fechar</button>
@@ -686,6 +706,7 @@
         this.pendingEffect = null;
         this.gameOver = false;
         this.tuxSafe = false; // Player has called TUX safely
+        this.penaltyStack = 0; // Track current penalty (+2/+4 stack)
         
         this.initializeDeck();
         this.initializePlayers();
@@ -708,7 +729,9 @@
           { type: 'troca', name: 'Troca de Mão' },
           { type: 'arch', name: 'Arch' },
           { type: 'nyan', name: 'Nyan Cat' },
-          { type: 'kali', name: 'Kali' }
+          { type: 'kali', name: 'Kali' },
+          { type: 'penguin2', name: '2 Penguins' },
+          { type: 'penguin4', name: '4 Penguins' }
         ];
 
         specialCards.forEach(card => {
@@ -761,6 +784,28 @@
             return;
         }
         
+        // Check if there's an active penalty
+        if (this.penaltyStack > 0) {
+          // Check if player has Flamengo card
+          const hasFlamengo = this.playerHand.some(card => card.type === 'flamengo');
+          if (hasFlamengo) {
+            showNotification('Você pode usar Flamengo para anular o efeito!');
+            return;
+          }
+          
+          // Player must draw penalty cards
+          const cardsToDraw = Math.min(this.penaltyStack, this.deck.length);
+          for (let i = 0; i < cardsToDraw; i++) {
+            this.playerHand.push(this.deck.pop());
+          }
+          
+          showNotification(`Você comprou ${cardsToDraw} cartas devido ao penalty!`);
+          this.penaltyStack = 0; // Reset penalty
+          this.nextTurn();
+          this.updateUI();
+          return;
+        }
+        
         const card = this.deck.pop();
         
         if (this.currentPlayer === 0) {
@@ -785,7 +830,19 @@
       }
 
       canPlayCard(card) {
-        if (this.currentCard.value === 'special' || card.value === 'special') return true;
+        if (this.currentCard.value === 'special' || card.value === 'special') {
+          // Special cards can always be played
+          if (card.type === 'penguin2' || card.type === 'penguin4') {
+            // +2/+4 cards can be played to stack on existing penalty
+            return true;
+          }
+          return true;
+        }
+        
+        // If there's an active penalty, only +2/+4 cards can be played
+        if (this.penaltyStack > 0) {
+          return card.type === 'penguin2' || card.type === 'penguin4';
+        }
         
         return card.color === this.currentCard.color || 
                card.number === this.currentCard.number ||
@@ -842,6 +899,12 @@
           case 'kali':
             this.showKaliModal();
             break;
+          case 'penguin2':
+            this.handlePenguin2Card();
+            break;
+          case 'penguin4':
+            this.handlePenguin4Card();
+            break;
           default:
             this.nextTurn();
         }
@@ -851,6 +914,18 @@
         const temp = [...this.playerHand];
         this.playerHand = [...this.aiPlayers[0].hand];
         this.aiPlayers[0].hand = temp;
+        this.nextTurn();
+      }
+
+      handlePenguin2Card() {
+        this.penaltyStack += 2;
+        showNotification(`+2 Penguins! Próximo jogador deve comprar ${this.penaltyStack} cartas ou jogar +2/+4 para aumentar o penalty.`);
+        this.nextTurn();
+      }
+
+      handlePenguin4Card() {
+        this.penaltyStack += 4;
+        showNotification(`+4 Penguins! Próximo jogador deve comprar ${this.penaltyStack} cartas ou jogar +4 para aumentar o penalty.`);
         this.nextTurn();
       }
 
@@ -866,6 +941,58 @@
       aiTurn() {
         const ai = this.aiPlayers[this.currentPlayer - 1];
         
+        // Check if there's an active penalty
+        if (this.penaltyStack > 0) {
+          // Check if AI has Flamengo card
+          const hasFlamengo = ai.hand.some(card => card.type === 'flamengo');
+          if (hasFlamengo) {
+            // AI uses Flamengo to cancel penalty
+            const flamengoIndex = ai.hand.findIndex(card => card.type === 'flamengo');
+            const flamengoCard = ai.hand.splice(flamengoIndex, 1)[0];
+            this.currentCard = flamengoCard;
+            this.penaltyStack = 0;
+            showNotification(`${ai.name} usou Flamengo para anular o penalty!`);
+            this.nextTurn();
+            return;
+          }
+          
+          // Check if AI has +2/+4 cards to stack
+          let playableIndex = -1;
+          for (let i = 0; i < ai.hand.length; i++) {
+            if (ai.hand[i].type === 'penguin2' || ai.hand[i].type === 'penguin4') {
+              playableIndex = i;
+              break;
+            }
+          }
+          
+          if (playableIndex !== -1) {
+            const cardToPlay = ai.hand.splice(playableIndex, 1)[0];
+            this.currentCard = cardToPlay;
+            
+            if (cardToPlay.type === 'penguin2') {
+              this.penaltyStack += 2;
+              showNotification(`${ai.name} jogou +2 Penguins! Penalty agora é ${this.penaltyStack}.`);
+            } else if (cardToPlay.type === 'penguin4') {
+              this.penaltyStack += 4;
+              showNotification(`${ai.name} jogou +4 Penguins! Penalty agora é ${this.penaltyStack}.`);
+            }
+            
+            this.nextTurn();
+            return;
+          }
+          
+          // AI must draw penalty cards
+          const cardsToDraw = Math.min(this.penaltyStack, this.deck.length);
+          for (let i = 0; i < cardsToDraw; i++) {
+            ai.hand.push(this.deck.pop());
+          }
+          
+          showNotification(`${ai.name} comprou ${cardsToDraw} cartas devido ao penalty!`);
+          this.penaltyStack = 0; // Reset penalty
+          this.nextTurn();
+          return;
+        }
+        
         let playableIndex = -1;
         for (let i = 0; i < ai.hand.length; i++) {
           if (this.canPlayCard(ai.hand[i])) {
@@ -880,8 +1007,7 @@
             if (this.checkGameOver()) return;
             
             if (cardToPlay.value === 'special') {
-                // Simplified AI logic for special cards
-                this.nextTurn();
+                this.handleSpecialCard(cardToPlay);
             } else {
                 this.nextTurn();
             }
@@ -929,6 +1055,7 @@
         this.updatePlayerHand();
         this.updateAIPlayers();
         this.updateTuxState();
+        this.updateGameStatus();
       }
 
       updateTuxState() {
@@ -1061,6 +1188,24 @@
         this.nextTurn();
         this.updateUI();
       }
+
+      updateGameStatus() {
+        const deckCountEl = document.getElementById('deck-count');
+        const playerCardsEl = document.getElementById('player-cards');
+        const penaltyContainer = document.getElementById('penalty-container');
+        const penaltyValue = document.getElementById('penalty-value');
+        
+        if (deckCountEl) deckCountEl.textContent = this.deck.length;
+        if (playerCardsEl) playerCardsEl.textContent = this.playerHand.length;
+        
+        // Show/hide penalty indicator
+        if (this.penaltyStack > 0) {
+          if (penaltyContainer) penaltyContainer.style.display = 'flex';
+          if (penaltyValue) penaltyValue.textContent = `+${this.penaltyStack}`;
+        } else {
+          if (penaltyContainer) penaltyContainer.style.display = 'none';
+        }
+      }
     }
 
     let game;
@@ -1086,6 +1231,9 @@
 
     function startNewGame() {
       document.getElementById('game-over').style.display = 'none';
+      if (game) {
+        game.penaltyStack = 0; // Reset penalty stack
+      }
       game = new TuxCardsGame();
     }
 
