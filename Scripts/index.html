@@ -225,7 +225,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
    Name = "Aura Hub",
-   Icon = 0,
+   Icon = nil, -- ou assetId válido em string
    LoadingTitle = "Aura Hub",
    LoadingSubtitle = "by Aura",
    Theme = "Default",
@@ -258,12 +258,11 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
-local AuraHub = Window:CreateFarm("Aura Hub", 4483362458)
-local Farm = Window:CreateFarm("Farm", 4483362458)
+local AuraHub = Window:CreateTab("Aura Hub", 4483362458)
+local Farm = Window:CreateTab("Farm", 4483362458)
 
 local SectionMain = AuraHub:CreateSection("Funções Principais")
 
--- Função para matar o jogador
 local function MatarJogador()
    local player = game.Players.LocalPlayer
    if player and player.Character and player.Character:FindFirstChild("Humanoid") then
@@ -295,7 +294,7 @@ local SliderJump = Farm:CreateSlider({
    Name = "Pulo (JumpPower)",
    Range = {0, 100},
    Increment = 1,
-   Suffix = "%",
+   Suffix = "", -- sem '%'
    CurrentValue = 50,
    Callback = function(Value)
       local player = game.Players.LocalPlayer
@@ -311,14 +310,18 @@ local InputNPC = Farm:CreateInput({
    Name = "Nome do NPC",
    PlaceholderText = "Digite um NPC...",
    RemoveTextAfterFocusLost = false,
-   Callback = function(Text) end
+   Callback = function(Text)
+      -- aqui você pode adicionar ação para o texto digitado
+   end
 })
 
 local DropdownNPC = Farm:CreateDropdown({
    Name = "Selecionar NPC",
    Options = {"Npc 1", "Npc 2", "Npc 3"},
    CurrentOption = "Npc 1",
-   Callback = function(Option) end
+   Callback = function(Option)
+      -- ação para opção selecionada
+   end
 })
 
 local SectionExtra = Farm:CreateSection("Extras")
@@ -327,7 +330,9 @@ local KeybindExample = Farm:CreateKeybind({
    Name = "Atalho de Teclado",
    CurrentKeybind = "F",
    HoldToInteract = false,
-   Callback = function(Key) end
+   Callback = function(Key)
+      -- ação ao pressionar a tecla
+   end
 })
 
 local ParagraphCreator = Farm:CreateParagraph({
@@ -336,8 +341,6 @@ local ParagraphCreator = Farm:CreateParagraph({
 })
 
 Rayfield:LoadConfiguration()
-</pre>`
-
 
         }
         
