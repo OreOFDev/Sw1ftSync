@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Sua Key • Sw1ftSync</title>
+  <style>
+    :root{
+      --bg:#0e0e0e;
+      --fg:#e5e5e5;
+      --accent:#00d17d;
+      --warn:#ff5555;
+      font-family:system-ui,Segoe UI,Roboto,sans-serif;
+    }
+    body{
+      background:var(--bg);
+      color:var(--fg);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      margin:0;
+      text-align:center;
+      padding:16px;
+    }
+    #status{font-size:1.25rem;margin-bottom:1rem}
+    #key{
+      display:none;
+      font-size:1.4rem;
+      font-weight:700;
+      background:#202020;
+      padding:12px 24px;
+      border-radius:8px;
+      user-select:all;
+    }
+  </style>
+</head>
+<body>
+  <div id="status">Verificando sua passagem pelo Linkvertise…</div>
+  <pre id="key">TEXT=1da</pre>
+
+<script>
+(() => {
+  const qs     = new URLSearchParams(location.search);
+  const serial = qs.get('serial');
+  const msg    = document.getElementById('status');
+  const keyBox = document.getElementById('key');
+
+  /* --- Regras de validação simples --- */
+  if (!serial) {
+    msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise.";
+    msg.style.color = "var(--warn)";
+    return;
+  }
+  if (serial.length < 20) {        // limite mínimo evita tokens triviais
+    msg.textContent = "❌ Token inválido ou encurtado demais.";
+    msg.style.color = "var(--warn)";
+    return;
+  }
+
+  /* --- Aprovado --- */
+  msg.textContent = "✅ Token verificado! Copie a key abaixo:";
+  msg.style.color = "var(--accent)";
+  keyBox.style.display = "block";
+})();
+</script>
+</body>
+</html>
