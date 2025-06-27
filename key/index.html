@@ -54,50 +54,48 @@
         "https://linkvertise.com/"
       ];
 
-      
       function getCookie(name) {
         const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
         return match ? decodeURIComponent(match[2]) : null;
       }
 
-      
       function checkReferrer() {
         const ref = document.referrer;
         if (!ref) return false;
-        return allowedReferrers.some(url => ref.startsWith(ref));
+        return allowedReferrers.some(url => ref.startsWith(url));
       }
 
-      
+      // Se já tiver cookie válido, libera direto
       if (getCookie("Validado") === "true") {
-        msg.textContent = "✅ Acesso validado! Copie a key abaixo:";
+        msg.textContent = " Acesso validado via cookie! Copie a key abaixo:";
         msg.style.color = "var(--accent)";
         keyBox.style.display = "block";
         return;
       }
 
-      
+      // Validação do referer
       if (!checkReferrer()) {
-        msg.textContent = "🚫 Bypasser! paia";
+        msg.textContent = " Você não veio do site Link-Hub ou Linkvertise.";
         msg.style.color = "var(--warn)";
         return;
       }
 
       if (!serial) {
-        msg.textContent = "🚫 Bypasser! paia"";
+        msg.textContent = " Você chegou aqui sem passar pelo Linkvertise (sem serial).";
         msg.style.color = "var(--warn)";
         return;
       }
 
       if (serial.length < 20) {
-        msg.textContent = "❌ Token inválido ou encurtado demais.";
+        msg.textContent = " Token inválido ou encurtado demais.";
         msg.style.color = "var(--warn)";
         return;
       }
 
-      
-      document.cookie = "Validado=true; path=/; max-age=86400";
+      // Tudo certo, salva o cookie
+      document.cookie = "Validado=true; path=/; max-age=86400"; // 24h
 
-      msg.textContent = "✅ Token verificado! Copie a key abaixo:";
+      msg.textContent = " Token verificado! Copie a key abaixo:";
       msg.style.color = "var(--accent)";
       keyBox.style.display = "block";
     })();
