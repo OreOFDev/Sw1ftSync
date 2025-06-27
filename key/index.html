@@ -39,13 +39,11 @@
   </style>
 </head>
 <body>
-  <div id="status">Verificando sua passagem pelo Linkvertise…</div>
+  <div id="status">Verificando origem…</div>
   <pre id="key">TEXT=1da</pre>
 
   <script>
     (() => {
-      const qs = new URLSearchParams(location.search);
-      const serial = qs.get('serial');
       const msg = document.getElementById('status');
       const keyBox = document.getElementById('key');
 
@@ -65,7 +63,7 @@
         return allowedReferrers.some(url => ref.startsWith(url));
       }
 
-      // Se já tiver cookie válido, libera direto
+  
       if (getCookie("Validado") === "true") {
         msg.textContent = " Acesso validado via cookie! Copie a key abaixo:";
         msg.style.color = "var(--accent)";
@@ -73,29 +71,17 @@
         return;
       }
 
-      // Validação do referer
+      
       if (!checkReferrer()) {
         msg.textContent = " Você não veio do site Link-Hub ou Linkvertise.";
         msg.style.color = "var(--warn)";
         return;
       }
 
-      if (!serial) {
-        msg.textContent = " Você chegou aqui sem passar pelo Linkvertise (sem serial).";
-        msg.style.color = "var(--warn)";
-        return;
-      }
+      
+      document.cookie = "Validado=true; path=/; max-age=86400";
 
-      if (serial.length < 20) {
-        msg.textContent = " Token inválido ou encurtado demais.";
-        msg.style.color = "var(--warn)";
-        return;
-      }
-
-      // Tudo certo, salva o cookie
-      document.cookie = "Validado=true; path=/; max-age=86400"; // 24h
-
-      msg.textContent = " Token verificado! Copie a key abaixo:";
+      msg.textContent = " Verificação bem-sucedida! Copie a key abaixo:";
       msg.style.color = "var(--accent)";
       keyBox.style.display = "block";
     })();
