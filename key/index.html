@@ -4,84 +4,103 @@
   <meta charset="UTF-8">
   <title>Sua Key • Sw1ftSync</title>
   <style>
-    :root{
-      --bg:#0e0e0e;
-      --fg:#e5e5e5;
-      --accent:#00d17d;
-      --warn:#ff5555;
-      font-family:system-ui,Segoe UI,Roboto,sans-serif;
+    :root {
+      --bg: #0e0e0e;
+      --fg: #e5e5e5;
+      --accent: #00d17d;
+      --warn: #ff5555;
+      font-family: system-ui, Segoe UI, Roboto, sans-serif;
     }
-    body{
-      background:var(--bg);
-      color:var(--fg);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      min-height:100vh;
-      margin:0;
-      text-align:center;
-      padding:16px;
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 16px;
     }
-    #status{font-size:1.25rem;margin-bottom:1rem}
-    #key{
-      display:none;
-      font-size:1.4rem;
-      font-weight:700;
-      background:#202020;
-      padding:12px 24px;
-      border-radius:8px;
-      user-select:all;
+    #status {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+    #key {
+      display: none;
+      font-size: 1.4rem;
+      font-weight: 700;
+      background: #202020;
+      padding: 12px 24px;
+      border-radius: 8px;
+      user-select: all;
     }
   </style>
 </head>
 <body>
   <div id="status">Verificando sua passagem pelo Linkvertise…</div>
   <pre id="key">TEXT=1da</pre>
-<script>
-(() => {
-  const qs     = new URLSearchParams(location.search);
-  const serial = qs.get('serial');
-  const msg    = document.getElementById('status');
-  const keyBox = document.getElementById('key');
 
-  const allowedReferrers = [
-    "https://link-hub.net/",
-    "https://linkvertise.com/"
-  ];
+  <script>
+    (() => {
+      const qs = new URLSearchParams(location.search);
+      const serial = qs.get('serial');
+      const msg = document.getElementById('status');
+      const keyBox = document.getElementById('key');
 
-  // Função para validar referer
-  function checkReferrer() {
-    const ref = document.referrer;
-    if (!ref) return false;
-    return allowedReferrers.some(url => ref.startsWith(url));
-  }
+      const allowedReferrers = [
+        "https://link-hub.net/",
+        "https://linkvertise.com/"
+      ];
 
-  /* --- Verifica se veio do Link-Hub/Linkvertise --- */
-  if (!checkReferrer()) {
-    msg.textContent = "🚫 Você não veio do site Link-Hub ou Linkvertise.";
-    msg.style.color = "var(--warn)";
-    return;
-  }
+      
+      function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+        return match ? decodeURIComponent(match[2]) : null;
+      }
 
-  /* --- Regras de validação simples para o serial --- */
-  if (!serial) {
-    msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise (sem serial).";
-    msg.style.color = "var(--warn)";
-    return;
-  }
-  if (serial.length < 20) {        // limite mínimo para evitar tokens triviais
-    msg.textContent = "❌ Token inválido ou encurtado demais.";
-    msg.style.color = "var(--warn)";
-    return;
-  }
+      
+      function checkReferrer() {
+        const ref = document.referrer;
+        if (!ref) return false;
+        return allowedReferrers.some(url => ref.startsWith(ref));
+      }
 
-  /* --- Aprovado --- */
-  msg.textContent = "✅ Token verificado! Copie a key abaixo:";
-  msg.style.color = "var(--accent)";
-  keyBox.style.display = "block";
-})();
-</script>
+      
+      if (getCookie("Validado") === "true") {
+        msg.textContent = "✅ Acesso validado via cookie! Copie a key abaixo:";
+        msg.style.color = "var(--accent)";
+        keyBox.style.display = "block";
+        return;
+      }
 
+      
+      if (!checkReferrer()) {
+        msg.textContent = "🚫 Você não veio do site Link-Hub ou Linkvertise.";
+        msg.style.color = "var(--warn)";
+        return;
+      }
+
+      if (!serial) {
+        msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise (sem serial).";
+        msg.style.color = "var(--warn)";
+        return;
+      }
+
+      if (serial.length < 20) {
+        msg.textContent = "❌ Token inválido ou encurtado demais.";
+        msg.style.color = "var(--warn)";
+        return;
+      }
+
+      
+      document.cookie = "Validado=true; path=/; max-age=86400";
+
+      msg.textContent = "✅ Token verificado! Copie a key abaixo:";
+      msg.style.color = "var(--accent)";
+      keyBox.style.display = "block";
+    })();
+  </script>
 </body>
 </html>
