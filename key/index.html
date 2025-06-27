@@ -38,7 +38,6 @@
 <body>
   <div id="status">Verificando sua passagem pelo Linkvertise…</div>
   <pre id="key">TEXT=1da</pre>
-
 <script>
 (() => {
   const qs     = new URLSearchParams(location.search);
@@ -46,13 +45,32 @@
   const msg    = document.getElementById('status');
   const keyBox = document.getElementById('key');
 
-  /* --- Regras de validação simples --- */
-  if (!serial) {
-    msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise.";
+  const allowedReferrers = [
+    "https://link-hub.net/",
+    "https://linkvertise.com/"
+  ];
+
+  // Função para validar referer
+  function checkReferrer() {
+    const ref = document.referrer;
+    if (!ref) return false;
+    return allowedReferrers.some(url => ref.startsWith(url));
+  }
+
+  /* --- Verifica se veio do Link-Hub/Linkvertise --- */
+  if (!checkReferrer()) {
+    msg.textContent = "🚫 Você não veio do site Link-Hub ou Linkvertise.";
     msg.style.color = "var(--warn)";
     return;
   }
-  if (serial.length < 20) {        // limite mínimo evita tokens triviais
+
+  /* --- Regras de validação simples para o serial --- */
+  if (!serial) {
+    msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise (sem serial).";
+    msg.style.color = "var(--warn)";
+    return;
+  }
+  if (serial.length < 20) {        // limite mínimo para evitar tokens triviais
     msg.textContent = "❌ Token inválido ou encurtado demais.";
     msg.style.color = "var(--warn)";
     return;
@@ -64,5 +82,6 @@
   keyBox.style.display = "block";
 })();
 </script>
+
 </body>
 </html>
