@@ -69,7 +69,7 @@
 
       
       if (getCookie("Validado") === "true") {
-        msg.textContent = "✅ Acesso validado via cookie! Copie a key abaixo:";
+        msg.textContent = "✅ Acesso validado! Copie a key abaixo:";
         msg.style.color = "var(--accent)";
         keyBox.style.display = "block";
         return;
@@ -77,13 +77,13 @@
 
       
       if (!checkReferrer()) {
-        msg.textContent = "🚫 Você não veio do site Link-Hub ou Linkvertise.";
+        msg.textContent = "🚫 Bypasser! paia";
         msg.style.color = "var(--warn)";
         return;
       }
 
       if (!serial) {
-        msg.textContent = "🚫 Você chegou aqui sem passar pelo Linkvertise (sem serial).";
+        msg.textContent = "🚫 Bypasser! paia"";
         msg.style.color = "var(--warn)";
         return;
       }
