@@ -27,8 +27,16 @@
       font-size: 1.25rem;
       margin-bottom: 1rem;
     }
-    #key {
+    .key-box {
       display: none;
+      margin: 12px 0;
+    }
+    .key-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .key-code {
       font-size: 1.4rem;
       font-weight: 700;
       background: #202020;
@@ -40,12 +48,22 @@
 </head>
 <body>
   <div id="status">Verificando origem…</div>
-  <pre id="key">31zdawr5</pre>
+
+  <div id="key1" class="key-box">
+    <div class="key-title">oRee Scripter X Brainrot</div>
+    <div class="key-code">31zdawr5</div>
+  </div>
+
+  <div id="key2" class="key-box">
+    <div class="key-title">Yoleia Hub X Brainrot</div>
+    <div class="key-code">YHk123gazore</div>
+  </div>
 
   <script>
     (() => {
       const msg = document.getElementById('status');
-      const keyBox = document.getElementById('key');
+      const key1 = document.getElementById('key1');
+      const key2 = document.getElementById('key2');
 
       const allowedReferrers = [
         "https://link-hub.net/",
@@ -63,27 +81,26 @@
         return allowedReferrers.some(url => ref.startsWith(url));
       }
 
-  
       if (getCookie("Validado") === "true") {
-        msg.textContent = " Acesso validado via cookie! Copie a key abaixo:";
+        msg.textContent = "✔ Acesso validado via cookie! Copie as keys abaixo:";
         msg.style.color = "var(--accent)";
-        keyBox.style.display = "block";
+        key1.style.display = "block";
+        key2.style.display = "block";
         return;
       }
 
-      
       if (!checkReferrer()) {
-        msg.textContent = " Você não veio do site Link-Hub ou Linkvertise.";
+        msg.textContent = "✖ Você não veio do site Link-Hub ou Linkvertise.";
         msg.style.color = "var(--warn)";
         return;
       }
 
-      
       document.cookie = "Validado=true; path=/; max-age=60";
 
-      msg.textContent = " Verificação bem-sucedida! Copie a key abaixo:";
+      msg.textContent = "✔ Verificação bem-sucedida! Copie as keys abaixo:";
       msg.style.color = "var(--accent)";
-      keyBox.style.display = "block";
+      key1.style.display = "block";
+      key2.style.display = "block";
     })();
   </script>
 </body>
