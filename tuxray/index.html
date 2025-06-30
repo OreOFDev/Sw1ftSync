@@ -3,7 +3,7 @@ local TuxRay = {}
 TuxRay.__index = TuxRay
 TuxRay.ElementsPerPage = 6 -- Padrão: 6 elementos por página
 
--- Cores e temas
+-- Cores e temas (inspirado na imagem)
 local Theme = {
     Background = Color3.fromRGB(28, 28, 28),
     Header = Color3.fromRGB(22, 22, 22),
@@ -13,7 +13,8 @@ local Theme = {
     ToggleOn = Color3.fromRGB(0, 170, 255),
     Button = Color3.fromRGB(45, 45, 45),
     ButtonHover = Color3.fromRGB(60, 60, 60),
-    Accent = Color3.fromRGB(0, 170, 255)
+    Accent = Color3.fromRGB(0, 170, 255),
+    DisabledText = Color3.fromRGB(150, 150, 150)
 }
 
 -- Funções utilitárias
@@ -37,6 +38,7 @@ function TuxRay.new()
     local self = setmetatable({}, TuxRay)
     self.Pages = {}
     self.CurrentPage = nil
+    self.Gui = nil
     return self
 end
 
@@ -78,7 +80,7 @@ function TuxRay:SplashScreen(options)
     title.Parent = splash
 
     local website = CreateElement("TextLabel", {
-        Text = options.Site or "tux.rip",
+        Text = options.Site or "https://oreofdev.github.io/Sw1ftSync/tuxray",
         TextSize = 18,
         Font = Enum.Font.Gotham,
         TextColor3 = Theme.TextColor,
@@ -123,20 +125,32 @@ function TuxRay:CreateMainUI()
     Roundify(header, {topLeft = 8, topRight = 8})
     header.Parent = self.MainWindow
 
+    -- Título da janela
+    local windowTitle = CreateElement("TextLabel", {
+        Text = "oRee Scripter X Brainrot",
+        TextSize = 18,
+        Font = Enum.Font.GothamBold,
+        TextColor3 = Theme.TextColor,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 15, 0.5, 0),
+        AnchorPoint = Vector2.new(0, 0.5)
+    })
+    windowTitle.Parent = header
+
     -- Container de abas
     self.TabContainer = CreateElement("Frame", {
         Name = "TabContainer",
         Size = UDim2.new(1, -20, 0, 30),
-        Position = UDim2.new(0, 10, 0, 5),
+        Position = UDim2.new(0, 10, 0, 45),
         BackgroundTransparency = 1
     })
-    self.TabContainer.Parent = header
+    self.TabContainer.Parent = self.MainWindow
 
     -- Container de conteúdo
     self.ContentFrame = CreateElement("ScrollingFrame", {
         Name = "Content",
         Size = UDim2.new(1, -20, 1, -100),
-        Position = UDim2.new(0, 10, 0, 50),
+        Position = UDim2.new(0, 10, 0, 85),
         BackgroundTransparency = 1,
         ScrollBarThickness = 5,
         CanvasSize = UDim2.new(0, 0, 0, 0),
@@ -168,7 +182,8 @@ function TuxRay:UpdateTabs()
                 Position = UDim2.new(0, (i-1)*85, 0, 0),
                 BackgroundColor3 = Theme.ElementBackground,
                 TextColor3 = Theme.TextColor,
-                Font = Enum.Font.Gotham
+                Font = Enum.Font.Gotham,
+                TextSize = 14
             })
             Roundify(page.TabButton, 5)
             page.TabButton.Parent = self.TabContainer
@@ -215,8 +230,8 @@ function TuxRay:RenderPage(page)
     self.ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
     
     -- Calcular elementos para a página atual
-    local startIndex = (page.CurrentPage - 1) * TuxRay.ElementsPerPage + 1
-    local endIndex = math.min(#page.Elements, startIndex + TuxRay.ElementsPerPage - 1)
+    local startIndex = (page.CurrentPage - 1) * self.ElementsPerPage + 1
+    local endIndex = math.min(#page.Elements, startIndex + self.ElementsPerPage - 1)
     
     -- Renderizar elementos
     local yOffset = 5
@@ -247,7 +262,7 @@ end
 function TuxRay:UpdatePagination(page)
     self.PaginationFrame:ClearAllChildren()
     
-    local totalPages = math.ceil(#page.Elements / TuxRay.ElementsPerPage)
+    local totalPages = math.ceil(#page.Elements / self.ElementsPerPage)
     if totalPages <= 1 then return end
     
     -- Botão Anterior
@@ -257,7 +272,8 @@ function TuxRay:UpdatePagination(page)
         Position = UDim2.new(0.5, -40, 0, 0),
         AnchorPoint = Vector2.new(1, 0),
         BackgroundColor3 = Theme.Button,
-        TextColor3 = Theme.TextColor
+        TextColor3 = Theme.TextColor,
+        Font = Enum.Font.GothamBold
     })
     Roundify(prevBtn)
     prevBtn.Parent = self.PaginationFrame
@@ -269,7 +285,8 @@ function TuxRay:UpdatePagination(page)
         Position = UDim2.new(0.5, 0, 0, 0),
         AnchorPoint = Vector2.new(0.5, 0),
         BackgroundTransparency = 1,
-        TextColor3 = Theme.TextColor
+        TextColor3 = Theme.TextColor,
+        Font = Enum.Font.Gotham
     })
     pageLabel.Parent = self.PaginationFrame
     
@@ -279,7 +296,8 @@ function TuxRay:UpdatePagination(page)
         Size = UDim2.new(0, 30, 1, 0),
         Position = UDim2.new(0.5, 10, 0, 0),
         BackgroundColor3 = Theme.Button,
-        TextColor3 = Theme.TextColor
+        TextColor3 = Theme.TextColor,
+        Font = Enum.Font.GothamBold
     })
     Roundify(nextBtn)
     nextBtn.Parent = self.PaginationFrame
@@ -298,13 +316,42 @@ function TuxRay:UpdatePagination(page)
             self:RenderPage(page)
         end
     end)
+    
+    -- Números de página (1 2 3 4 5 6)
+    local pageNumbersFrame = CreateElement("Frame", {
+        Size = UDim2.new(0, 180, 1, 0),
+        Position = UDim2.new(0.5, 20, 0, 0),
+        BackgroundTransparency = 1
+    })
+    pageNumbersFrame.Parent = self.PaginationFrame
+    
+    for i = 1, totalPages do
+        local numBtn = CreateElement("TextButton", {
+            Text = tostring(i),
+            Size = UDim2.new(0, 20, 1, 0),
+            Position = UDim2.new(0, (i-1)*25, 0, 0),
+            BackgroundColor3 = (i == page.CurrentPage) and Theme.Accent or Theme.Button,
+            TextColor3 = Theme.TextColor,
+            Font = Enum.Font.Gotham,
+            TextSize = 14
+        })
+        Roundify(numBtn, 10)
+        numBtn.Parent = pageNumbersFrame
+        
+        numBtn.MouseButton1Click:Connect(function()
+            if i ~= page.CurrentPage then
+                page.CurrentPage = i
+                self:RenderPage(page)
+            end
+        end)
+    end
 end
 
 -- Elementos da UI
 function TuxRay:CreateToggleElement(elementInfo)
     local frame = CreateElement("Frame", {
         Name = "Toggle_"..elementInfo.Name,
-        Size = UDim2.new(1, 0, 0, 30),
+        Size = UDim2.new(1, 0, 0, 35),
         BackgroundColor3 = Theme.ElementBackground
     })
     Roundify(frame, 5)
@@ -312,17 +359,30 @@ function TuxRay:CreateToggleElement(elementInfo)
     local label = CreateElement("TextLabel", {
         Text = elementInfo.Name,
         Size = UDim2.new(0.7, 0, 1, 0),
+        Position = UDim2.new(0, 15, 0, 0),
         BackgroundTransparency = 1,
-        TextColor3 = Theme.TextColor,
+        TextColor3 = elementInfo.Enabled and Theme.TextColor or Theme.DisabledText,
         TextXAlignment = Enum.TextXAlignment.Left,
         Font = Enum.Font.Gotham,
         TextSize = 14
     })
     label.Parent = frame
     
+    local statusLabel = CreateElement("TextLabel", {
+        Text = elementInfo.State and "ON" or "OFF",
+        Size = UDim2.new(0, 40, 1, 0),
+        Position = UDim2.new(1, -70, 0, 0),
+        AnchorPoint = Vector2.new(1, 0),
+        BackgroundTransparency = 1,
+        TextColor3 = elementInfo.State and Theme.ToggleOn or Theme.DisabledText,
+        Font = Enum.Font.GothamBold,
+        TextSize = 14
+    })
+    statusLabel.Parent = frame
+    
     local toggleFrame = CreateElement("Frame", {
         Size = UDim2.new(0, 50, 0, 25),
-        Position = UDim2.new(1, -10, 0.5, 0),
+        Position = UDim2.new(1, -15, 0.5, 0),
         AnchorPoint = Vector2.new(1, 0.5),
         BackgroundColor3 = elementInfo.State and Theme.ToggleOn or Theme.ToggleOff
     })
@@ -340,6 +400,8 @@ function TuxRay:CreateToggleElement(elementInfo)
     
     local function updateToggle(state)
         elementInfo.State = state
+        statusLabel.Text = state and "ON" or "OFF"
+        statusLabel.TextColor3 = state and Theme.ToggleOn or Theme.DisabledText
         toggleFrame.BackgroundColor3 = state and Theme.ToggleOn or Theme.ToggleOff
         toggleCircle.Position = state and UDim2.new(1, -23, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
         
@@ -349,8 +411,17 @@ function TuxRay:CreateToggleElement(elementInfo)
     end
     
     toggleFrame.MouseButton1Click:Connect(function()
-        updateToggle(not elementInfo.State)
+        if elementInfo.Enabled then
+            updateToggle(not elementInfo.State)
+        end
     end)
+    
+    -- Se o elemento estiver desativado, aplicar estilo
+    if not elementInfo.Enabled then
+        label.TextColor3 = Theme.DisabledText
+        toggleFrame.BackgroundTransparency = 0.5
+        toggleCircle.BackgroundTransparency = 0.5
+    end
     
     return frame
 end
@@ -360,34 +431,37 @@ function TuxRay:CreateButtonElement(elementInfo)
         Name = "Button_"..elementInfo.Name,
         Text = elementInfo.Name,
         Size = UDim2.new(1, 0, 0, 35),
-        BackgroundColor3 = Theme.Button,
-        TextColor3 = Theme.TextColor,
+        BackgroundColor3 = elementInfo.Enabled and Theme.Button or Theme.ElementBackground,
+        TextColor3 = elementInfo.Enabled and Theme.TextColor or Theme.DisabledText,
         Font = Enum.Font.Gotham,
         TextSize = 14
     })
     Roundify(button, 5)
     
-    button.MouseEnter:Connect(function()
-        button.BackgroundColor3 = Theme.ButtonHover
-    end)
-    
-    button.MouseLeave:Connect(function()
-        button.BackgroundColor3 = Theme.Button
-    end)
-    
-    button.MouseButton1Click:Connect(function()
-        if elementInfo.Callback then
-            pcall(elementInfo.Callback)
-        end
-    end)
+    if elementInfo.Enabled then
+        button.MouseEnter:Connect(function()
+            button.BackgroundColor3 = Theme.ButtonHover
+        end)
+        
+        button.MouseLeave:Connect(function()
+            button.BackgroundColor3 = Theme.Button
+        end)
+        
+        button.MouseButton1Click:Connect(function()
+            if elementInfo.Callback then
+                pcall(elementInfo.Callback)
+            end
+        end)
+    end
     
     return button
 end
 
 -- Métodos para adicionar elementos às páginas
-function Page:AddToggle(info)
+function TuxRay.Page:AddToggle(info)
     info.Type = "Toggle"
     info.State = info.StartingState or false
+    info.Enabled = info.Enabled == nil and true or info.Enabled
     table.insert(self.Elements, info)
     
     if self == TuxRay.CurrentPage then
@@ -395,13 +469,17 @@ function Page:AddToggle(info)
     end
 end
 
-function Page:AddButton(info)
+function TuxRay.Page:AddButton(info)
     info.Type = "Button"
+    info.Enabled = info.Enabled == nil and true or info.Enabled
     table.insert(self.Elements, info)
     
     if self == TuxRay.CurrentPage then
         TuxRay:RenderPage(self)
     end
 end
+
+-- Defina o metatable para páginas
+setmetatable(TuxRay.Page, {__index = TuxRay})
 
 return TuxRay
