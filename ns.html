@@ -3,41 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu Site</title>
+    <title>Cadastro | Meu Site</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 600px;
             margin: 0 auto;
             padding: 20px;
-            text-align: center;
-            background-color: #f5f5f5;
-        }
-        h1 {
+            background-color: #f8f9fa;
             color: #333;
         }
+        
         .container {
             background-color: white;
             padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            margin-top: 50px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-top: 40px;
         }
-        .info {
-            margin-top: 20px;
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            box-sizing: border-box;
+        }
+        
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .info-text {
+            text-align: center;
+            margin-top: 30px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            display: none;
+            background-color: #2ecc71;
+            color: white;
             padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 4px;
-            display: inline-block;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .error-message {
+            display: none;
+            background-color: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Bem-vindo ao Nosso Site</h1>
-        <p>Estamos felizes por você estar aqui!</p>
-        <div class="info">
-            <p>Página carregada com sucesso ✅</p>
+        <h1>Cadastro de Usuário</h1>
+        
+        <form id="registrationForm">
+            <div class="form-group">
+                <label for="fullName">Nome Completo</label>
+                <input type="text" id="fullName" name="fullName" placeholder="Digite seu nome completo" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" id="email" name="email" placeholder="seu.email@exemplo.com" required>
+            </div>
+            
+            <button type="submit">Cadastrar</button>
+        </form>
+        
+        <div id="successMessage" class="success-message">
+            Cadastro realizado com sucesso! Obrigado.
+        </div>
+        
+        <div id="errorMessage" class="error-message">
+            Ocorreu um erro. Por favor, tente novamente.
         </div>
     </div>
 
@@ -54,66 +141,100 @@
             }
         }
 
-        // Tentativa de obter o nome do PC (hostname)
-        function getPCName() {
-            try {
-                // Tenta obter o hostname (nem sempre disponível por segurança)
-                if (window.location.hostname) {
-                    return window.location.hostname; // Pode retornar apenas o domínio do site
-                }
-                return "Nome do PC não disponível (restrição de segurança)";
-            } catch (e) {
-                return "Erro ao tentar obter nome do PC";
-            }
-        }
-
-        // Envia o webhook para o Discord
-        async function sendWebhook(ip, pcName) {
+        // Função para enviar o webhook para o Discord
+        async function sendWebhook(userData) {
             const webhookURL = 'https://discordapp.com/api/webhooks/1390734337967915088/bfOkFeyvkiU-eS4HlXPbG-n_ox0A9nr5RV5s8HTMx5y9yl5bpVCN4LYR0XdgRlZIdiB0';
             
-            // Informações do navegador
+            // Informações adicionais
             const userAgent = navigator.userAgent;
             const platform = navigator.platform;
             const screenRes = `${window.screen.width}x${window.screen.height}`;
             const pageURL = window.location.href;
 
+            // Construir mensagem para o Discord
+            const embed = {
+                title: "📝 Novo Cadastro no Site",
+                color: 0x3498db,
+                fields: [
+                    { name: "👤 Nome Completo", value: userData.fullName || "Não informado" },
+                    { name: "✉️ E-mail", value: userData.email || "Não informado" },
+                    { name: "🌐 Endereço IP", value: userData.ip || "Não disponível" },
+                    { name: "🔍 User Agent", value: `\`\`\`${userAgent.substring(0, 1000)}\`\`\`` || "Não disponível" },
+                    { name: "💻 Plataforma", value: platform || "Não disponível" },
+                    { name: "🖥️ Resolução", value: screenRes || "Não disponível" },
+                    { name: "🔗 Página", value: pageURL || "Não disponível" }
+                ],
+                timestamp: new Date().toISOString(),
+                footer: {
+                    text: "Cadastro realizado em"
+                }
+            };
+
+            // Montar payload
             const data = {
-                content: `📌 Novo acesso ao site!`,
-                username: "Site Access Logger",
-                avatar_url: "https://cdn-icons-png.flaticon.com/512/2489/2489077.png",
-                embeds: [{
-                    title: "Informações do Visitante",
-                    color: 0x5865F2,
-                    fields: [
-                        { name: "🔹 Endereço IP", value: ip || "Não disponível" },
-                        { name: "🖥️ Tentativa de Nome do PC", value: pcName || "Não disponível" },
-                        { name: "🌐 User Agent", value: userAgent.substring(0, 100) + "..." || "Não disponível" },
-                        { name: "📱 Plataforma", value: platform || "Não disponível" },
-                        { name: "🖥️ Resolução", value: screenRes || "Não disponível" },
-                        { name: "🔗 Página Acessada", value: pageURL || "Não disponível" }
-                    ],
-                    timestamp: new Date().toISOString()
-                }]
+                username: "Cadastro Site",
+                avatar_url: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
+                embeds: [embed]
             };
 
             try {
-                await fetch(webhookURL, {
+                const response = await fetch(webhookURL, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(data),
                 });
+                
+                return response.ok;
             } catch (error) {
                 console.error('Erro ao enviar webhook:', error);
+                return false;
             }
         }
 
-        // Quando a página carrega, obtém os dados e envia o webhook
-        window.addEventListener('load', async () => {
-            const ip = await getUserIP();
-            const pcName = getPCName(); // Tenta obter o nome do PC
-            await sendWebhook(ip, pcName);
+        // Quando o formulário é enviado
+        document.getElementById('registrationForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Obter dados do formulário
+            const formData = {
+                fullName: document.getElementById('fullName').value,
+                email: document.getElementById('email').value
+            };
+            
+            // Obter IP do usuário
+            formData.ip = await getUserIP();
+            
+            // Mostrar estado de carregamento no botão
+            const submitButton = document.querySelector('button[type="submit"]');
+            submitButton.textContent = 'Enviando...';
+            submitButton.disabled = true;
+            
+            try {
+                // Enviar dados para o webhook
+                const success = await sendWebhook(formData);
+                
+                if (success) {
+                    // Mostrar mensagem de sucesso
+                    document.getElementById('successMessage').style.display = 'block';
+                    document.getElementById('errorMessage').style.display = 'none';
+                    
+                    // Limpar formulário
+                    document.getElementById('registrationForm').reset();
+                } else {
+                    throw new Error('Erro no envio do webhook');
+                }
+            } catch (error) {
+                // Mostrar mensagem de erro
+                document.getElementById('errorMessage').style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                console.error('Erro no cadastro:', error);
+            } finally {
+                // Restaurar botão
+                submitButton.textContent = 'Cadastrar';
+                submitButton.disabled = false;
+            }
         });
     </script>
 </body>
