@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tux Exploit</title>
+  <style>
+    :root {
+      --bg-color: #0d1117;
+      --card-bg: #161b22;
+      --accent: #58a6ff;
+      --text-color: #c9d1d9;
+      --btn-bg: var(--accent);
+      --btn-bg-hover: #1f6feb;
+      --btn-text: #ffffff;
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: "Inter", system-ui, sans-serif;
+    }
+
+    body {
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: var(--card-bg);
+      padding: 2rem 3rem;
+      border-radius: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .download-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      border-radius: 0.75rem;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      font-size: 1.1rem;
+      text-decoration: none;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .download-btn:hover {
+      background: var(--btn-bg-hover);
+      transform: translateY(-2px);
+    }
+
+    .download-btn:active {
+      transform: translateY(1px);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>TXPloit</h1>
+    <!-- Coloque o arquivo Tux.rar na mesma pasta deste HTML -->
+    <a href="TXPloit oRee Scripter.rar" download class="download-btn">Baixar (.rar)</a>
+  </div>
+
+  <script>
+    // Feedback visual opcional ao iniciar o download
+    const btn = document.querySelector('.download-btn');
+    btn.addEventListener('click', () => {
+      const originalText = btn.textContent;
+      btn.textContent = 'Iniciando download…';
+      setTimeout(() => btn.textContent = originalText, 2000);
+    });
+  </script>
+</body>
+</html>
