@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>zClaw</title>
+    <title>zClaw - Executor para Roblox</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -85,6 +85,7 @@
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         .nav-menu a:hover {
@@ -345,17 +346,45 @@
             margin-bottom: 3rem;
         }
 
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .download-card {
+            background: var(--bg-card);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-green);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
+        }
+
+        .download-card h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary-green);
+        }
+
         .download-info {
             display: flex;
-            justify-content: center;
-            gap: 3rem;
-            margin-bottom: 3rem;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
         .info-item {
             display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .info-label {
@@ -374,17 +403,18 @@
         .download-button {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 0.75rem;
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: var(--bg-dark);
-            padding: 1.25rem 3rem;
+            padding: 1rem 2rem;
             border: none;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-bottom: 1rem;
+            width: 100%;
         }
 
         .download-button:hover {
@@ -444,6 +474,7 @@
             text-decoration: none;
             margin-bottom: 0.5rem;
             transition: color 0.3s ease;
+            cursor: pointer;
         }
 
         .link-group a:hover {
@@ -454,6 +485,7 @@
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
+            flex-wrap: wrap;
         }
 
         .social-link {
@@ -481,24 +513,35 @@
             color: var(--text-muted);
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            max-width: 400px;
+            font-family: 'Inter', sans-serif;
         }
 
-        @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        .notification.success {
+            background: var(--primary-green);
+            color: var(--bg-dark);
         }
 
-        /* Notification Styles */
+        .notification.info {
+            background: #3742fa;
+            color: white;
+        }
+
+        .notification.error {
+            background: #ff4757;
+            color: white;
+        }
+
         .notification-content {
             display: flex;
             align-items: center;
@@ -535,12 +578,29 @@
             background: rgba(255,255,255,0.2);
         }
 
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
             }
-            
+
             .nav-menu {
                 position: fixed;
                 left: -100%;
@@ -554,63 +614,62 @@
                 backdrop-filter: blur(10px);
                 padding: 2rem 0;
             }
-            
+
             .nav-menu.active {
                 left: 0;
             }
-            
+
             .nav-menu li {
                 margin: 1rem 0;
             }
-            
+
             .hamburger.active span:nth-child(2) {
                 opacity: 0;
             }
-            
+
             .hamburger.active span:nth-child(1) {
                 transform: translateY(8px) rotate(45deg);
             }
-            
+
             .hamburger.active span:nth-child(3) {
                 transform: translateY(-8px) rotate(-45deg);
             }
-            
+
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 2rem;
             }
-            
+
             .hero-title {
                 font-size: 2.5rem;
             }
-            
+
             .subtitle {
                 font-size: 1.5rem;
             }
-            
+
             .hero-stats {
                 justify-content: center;
             }
-            
+
             .features-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .download-info {
-                flex-direction: column;
-                gap: 1rem;
+
+            .download-grid {
+                grid-template-columns: 1fr;
             }
-            
+
             .footer-content {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-            
+
             .section-title {
                 font-size: 2rem;
             }
-            
+
             .download-content h2 {
                 font-size: 2rem;
             }
@@ -625,30 +684,36 @@
             .nav {
                 padding: 1rem;
             }
-            
+
             .hero {
                 padding: 100px 0 60px;
             }
-            
+
             .hero-content {
                 padding: 0 1rem;
             }
-            
+
             .hero-title {
                 font-size: 2rem;
             }
-            
+
             .cta-button, .download-button {
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
             }
-            
+
             .feature-card {
                 padding: 1.5rem;
             }
-            
+
             .features, .download {
                 padding: 60px 0;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                max-width: none;
             }
         }
     </style>
@@ -661,12 +726,12 @@
                 <h1><span class="z-letter">z</span><span class="highlight">Claw</span></h1>
             </div>
             <ul class="nav-menu">
-                <li><a href="#home">Início</a></li>
-                <li><a href="#features">Features</a></li>
-                <li><a href="#download">Download</a></li>
-                <li><a href="#contact">Contato</a></li>
+                <li><a onclick="scrollToSection('home')">Início</a></li>
+                <li><a onclick="scrollToSection('features')">Features</a></li>
+                <li><a onclick="scrollToSection('download')">Download</a></li>
+                <li><a onclick="scrollToSection('contact')">Contato</a></li>
             </ul>
-            <div class="hamburger">
+            <div class="hamburger" onclick="toggleMobileMenu()">
                 <span></span>
                 <span></span>
                 <span></span>
@@ -700,7 +765,7 @@
                         <span class="stat-label">APIs</span>
                     </div>
                 </div>
-                <button class="cta-button" onclick="scrollToDownload()">
+                <button class="cta-button" onclick="scrollToSection('download')">
                     <span>Download Grátis</span>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -753,7 +818,7 @@
                     <h3>100% UNC</h3>
                     <p>Compatibilidade total com Universal Naming Convention. Execute qualquer script sem limitações.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -765,17 +830,17 @@
                     <h3>No Key</h3>
                     <p>Sem necessidade de chaves ou verificações. Download direto e uso imediato.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
                         </svg>
                     </div>
-                    <h3>2 API</h3>
-                    <p>Suporte a 2 APIs principais para máxima compatibilidade com todos os scripts.</p>
+                    <h3>3 APIs</h3>
+                    <p>Suporte a 3 APIs principais para máxima compatibilidade com todos os scripts.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -789,7 +854,7 @@
                     <h3>No Crash</h3>
                     <p>Sistema anti-crash avançado. Estabilidade garantida em todas as situações.</p>
                 </div>
-                
+
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -800,9 +865,6 @@
                     <h3>Interface Moderna</h3>
                     <p>Design intuitivo e moderno. Fácil de usar para iniciantes e profissionais.</p>
                 </div>
-                
-    
-                </div>
             </div>
         </div>
     </section>
@@ -812,29 +874,64 @@
         <div class="container">
             <div class="download-content">
                 <h2>Pronto para começar?</h2>
-                <p>Baixe o zClaw agora e experimente o melhor executor para Roblox</p>
-                <div class="download-info">
-                    <div class="info-item">
-                        <span class="info-label">Versão:</span>
-                        <span class="info-value">v1</span>
+                <p>Baixe o zClaw e a zClawAPI agora e experimente o melhor executor para Roblox</p>
+                
+                <div class="download-grid">
+                    <!-- zClaw Executor -->
+                    <div class="download-card">
+                        <h3>zClaw Executor</h3>
+                        <div class="download-info">
+                            <div class="info-item">
+                                <span class="info-label">Versão:</span>
+                                <span class="info-value">v2</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tamanho:</span>
+                                <span class="info-value">6 MB</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Sistema:</span>
+                                <span class="info-value">Windows 10/11</span>
+                            </div>
+                        </div>
+                        <button class="download-button" onclick="downloadExecutor()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download zClaw
+                        </button>
                     </div>
-                    <div class="info-item">
-                        <span class="info-label">Tamanho:</span>
-                        <span class="info-value">6 MB</span>
-                    </div>
-                    <div class="info-item">
-                        <span class="info-label">Sistema:</span>
-                        <span class="info-value">Windows 10/11</span>
+
+                    <!-- zClaw API -->
+                    <div class="download-card">
+                        <h3>zClaw API</h3>
+                        <div class="download-info">
+                            <div class="info-item">
+                                <span class="info-label">Versão:</span>
+                                <span class="info-value">v1.0</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tamanho:</span>
+                                <span class="info-value">24 KB</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Tipo:</span>
+                                <span class="info-value">API Library</span>
+                            </div>
+                        </div>
+                        <button class="download-button" onclick="downloadAPI()">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7,10 12,15 17,10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            Download zClawAPI
+                        </button>
                     </div>
                 </div>
-                <button class="download-button" onclick="downloadExecutor()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7,10 12,15 17,10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Download zClaw
-                </button>
+
                 <p class="download-note">
                     * Gratuito para sempre • Atualizações automáticas
                 </p>
@@ -875,8 +972,8 @@
                 <div class="footer-links">
                     <div class="link-group">
                         <h4>Produto</h4>
-                        <a href="#features">Features</a>
-                        <a href="#download">Download</a>
+                        <a onclick="scrollToSection('features')">Features</a>
+                        <a onclick="scrollToSection('download')">Download</a>
                         <a href="#">Changelog</a>
                     </div>
                     <div class="link-group">
@@ -895,52 +992,48 @@
 
     <script>
         // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
-
-        hamburger.addEventListener('click', () => {
+        function toggleMobileMenu() {
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-menu');
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
-        });
+        }
 
         // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
+                const hamburger = document.querySelector('.hamburger');
+                const navMenu = document.querySelector('.nav-menu');
                 hamburger.classList.remove('active');
                 navMenu.classList.remove('active');
             });
         });
 
         // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Scroll to download section
-        function scrollToDownload() {
-            document.getElementById('download').scrollIntoView({
-                behavior: 'smooth'
-            });
+        function scrollToSection(sectionId) {
+            const target = document.getElementById(sectionId);
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
         }
 
-        // Download function
+        // Download functions
         function downloadExecutor() {
-            // Create download notification
             showNotification('Download iniciado! zClaw será baixado em instantes.', 'success');
             
-            // Redirect to actual download site
             setTimeout(() => {
                 window.open('https://link-center.net/1261358/g308y2yoSuES', '_blank');
-                showNotification('Redirecionando para o site de download...', 'info');
+            }, 1000);
+        }
+
+        function downloadAPI() {
+            showNotification('Download da zClawAPI iniciado!', 'success');
+            
+            setTimeout(() => {
+                window.open('https://link-hub.net/1261358/lkFVXgABZVyu', '_blank');
             }, 1000);
         }
 
@@ -949,10 +1042,10 @@
             // Remove existing notifications
             const existingNotifications = document.querySelectorAll('.notification');
             existingNotifications.forEach(notification => notification.remove());
-            
+
             // Create notification element
             const notification = document.createElement('div');
-            notification.className = `notification notification-${type}`;
+            notification.className = `notification ${type}`;
             notification.innerHTML = `
                 <div class="notification-content">
                     <span class="notification-icon">
@@ -962,25 +1055,9 @@
                     <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
                 </div>
             `;
-            
-            // Add styles
-            notification.style.cssText = `
-                position: fixed;
-                top: 100px;
-                right: 20px;
-                background: ${type === 'success' ? '#00ff88' : type === 'error' ? '#ff4757' : '#3742fa'};
-                color: ${type === 'success' ? '#000' : '#fff'};
-                padding: 1rem 1.5rem;
-                border-radius: 8px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-                z-index: 10000;
-                animation: slideIn 0.3s ease;
-                max-width: 400px;
-                font-family: 'Inter', sans-serif;
-            `;
-            
+
             document.body.appendChild(notification);
-            
+
             // Auto remove after 5 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
@@ -994,7 +1071,7 @@
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero');
             const codeWindow = document.querySelector('.code-window');
-            
+
             if (hero && codeWindow) {
                 codeWindow.style.transform = `translateY(${scrolled * 0.1}px)`;
             }
@@ -1024,7 +1101,7 @@
             });
         }, observerOptions);
 
-        // Observe feature cards
+        // Observe feature cards when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             const featureCards = document.querySelectorAll('.feature-card');
             featureCards.forEach(card => {
@@ -1036,17 +1113,17 @@
         function typeCode() {
             const codeLines = document.querySelectorAll('.code-text');
             const originalTexts = Array.from(codeLines).map(line => line.textContent);
-            
+
             codeLines.forEach(line => line.textContent = '');
-            
+
             let lineIndex = 0;
             let charIndex = 0;
-            
+
             function typeNextChar() {
                 if (lineIndex < codeLines.length) {
                     const currentLine = codeLines[lineIndex];
                     const targetText = originalTexts[lineIndex];
-                    
+
                     if (charIndex < targetText.length) {
                         currentLine.textContent += targetText[charIndex];
                         charIndex++;
@@ -1058,7 +1135,7 @@
                     }
                 }
             }
-            
+
             setTimeout(typeNextChar, 1000);
         }
 
@@ -1069,14 +1146,15 @@
         window.addEventListener('load', () => {
             document.body.style.opacity = '0';
             document.body.style.transition = 'opacity 0.5s ease';
-            
+
             setTimeout(() => {
                 document.body.style.opacity = '1';
             }, 100);
         });
 
         console.log('🟢 zClaw Executor Website carregado com sucesso!');
-        console.log('💚 100% UNC | No Key | 2 API | No Crash');
+        console.log('💚 100% UNC | No Key | 3 API | No Crash');
+        console.log('🆕 zClawAPI download adicionado!');
     </script>
 </body>
 </html>
