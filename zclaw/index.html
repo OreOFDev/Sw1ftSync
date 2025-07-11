@@ -225,9 +225,17 @@
             border-radius: 50%;
         }
 
-        .control.red { background: #ff5f57; }
-        .control.yellow { background: #ffbd2e; }
-        .control.green { background: #28ca42; }
+        .control.red {
+            background: #ff5f57;
+        }
+
+        .control.yellow {
+            background: #ffbd2e;
+        }
+
+        .control.green {
+            background: #28ca42;
+        }
 
         .window-title {
             color: var(--text-secondary);
@@ -370,8 +378,17 @@
         .download-card h3 {
             font-size: 1.8rem;
             font-weight: 700;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             color: var(--primary-green);
+        }
+
+        .download-subtitle {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .download-info {
@@ -591,8 +608,14 @@
         }
 
         @keyframes slideIn {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* Responsive Design */
@@ -748,8 +771,7 @@
                     <span class="subtitle">Executor</span>
                 </h1>
                 <p class="hero-description">
-                    O executor mais poderoso e confiável para Roblox. 
-                    Sem travamentos, sem chaves, máxima compatibilidade.
+                    O executor mais poderoso e confiável para Roblox. Sem travamentos, sem chaves, máxima compatibilidade.
                 </p>
                 <div class="hero-stats">
                     <div class="stat">
@@ -818,7 +840,6 @@
                     <h3>100% UNC</h3>
                     <p>Compatibilidade total com Universal Naming Convention. Execute qualquer script sem limitações.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -830,7 +851,6 @@
                     <h3>No Key</h3>
                     <p>Sem necessidade de chaves ou verificações. Download direto e uso imediato.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -840,7 +860,6 @@
                     <h3>3 APIs</h3>
                     <p>Suporte a 3 APIs principais para máxima compatibilidade com todos os scripts.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -854,7 +873,6 @@
                     <h3>No Crash</h3>
                     <p>Sistema anti-crash avançado. Estabilidade garantida em todas as situações.</p>
                 </div>
-
                 <div class="feature-card">
                     <div class="feature-icon">
                         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -875,11 +893,11 @@
             <div class="download-content">
                 <h2>Pronto para começar?</h2>
                 <p>Baixe o zClaw e a zClawAPI agora e experimente o melhor executor para Roblox</p>
-                
                 <div class="download-grid">
                     <!-- zClaw Executor -->
                     <div class="download-card">
                         <h3>zClaw Executor</h3>
+                        <div class="download-subtitle">zClaw Executor Criado Por oRee Scripter</div>
                         <div class="download-info">
                             <div class="info-item">
                                 <span class="info-label">Versão:</span>
@@ -903,10 +921,10 @@
                             Download zClaw
                         </button>
                     </div>
-
                     <!-- zClaw API -->
                     <div class="download-card">
                         <h3>zClaw API</h3>
+                        <div class="download-subtitle">FEITA PARA CRIAR EXECUTORES!</div>
                         <div class="download-info">
                             <div class="info-item">
                                 <span class="info-label">Versão:</span>
@@ -931,7 +949,6 @@
                         </button>
                     </div>
                 </div>
-
                 <p class="download-note">
                     * Gratuito para sempre • Atualizações automáticas
                 </p>
@@ -1023,7 +1040,6 @@
         // Download functions
         function downloadExecutor() {
             showNotification('Download iniciado! zClaw será baixado em instantes.', 'success');
-            
             setTimeout(() => {
                 window.open('https://link-center.net/1261358/g308y2yoSuES', '_blank');
             }, 1000);
@@ -1031,7 +1047,6 @@
 
         function downloadAPI() {
             showNotification('Download da zClawAPI iniciado!', 'success');
-            
             setTimeout(() => {
                 window.open('https://linkvertise.com/1261358/Otv53Zwavrwt', '_blank');
             }, 1000);
@@ -1055,7 +1070,6 @@
                     <button class="notification-close" onclick="this.parentElement.parentElement.remove()">×</button>
                 </div>
             `;
-
             document.body.appendChild(notification);
 
             // Auto remove after 5 seconds
@@ -1071,7 +1085,6 @@
             const scrolled = window.pageYOffset;
             const hero = document.querySelector('.hero');
             const codeWindow = document.querySelector('.code-window');
-
             if (hero && codeWindow) {
                 codeWindow.style.transform = `translateY(${scrolled * 0.1}px)`;
             }
@@ -1113,7 +1126,6 @@
         function typeCode() {
             const codeLines = document.querySelectorAll('.code-text');
             const originalTexts = Array.from(codeLines).map(line => line.textContent);
-
             codeLines.forEach(line => line.textContent = '');
 
             let lineIndex = 0;
@@ -1146,7 +1158,6 @@
         window.addEventListener('load', () => {
             document.body.style.opacity = '0';
             document.body.style.transition = 'opacity 0.5s ease';
-
             setTimeout(() => {
                 document.body.style.opacity = '1';
             }, 100);
