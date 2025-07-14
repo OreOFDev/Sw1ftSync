@@ -11,7 +11,6 @@
             padding: 0;
             box-sizing: border-box;
         }
-
         :root {
             --primary-green: #00ff88;
             --dark-green: #00cc6a;
@@ -25,7 +24,6 @@
             --border-color: #333333;
             --text-black: #000000;
         }
-
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-dark);
@@ -33,13 +31,11 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
         }
-
         /* Header */
         .header {
             position: fixed;
@@ -50,7 +46,6 @@
             z-index: 1000;
             border-bottom: 1px solid var(--border-color);
         }
-
         .nav {
             display: flex;
             justify-content: space-between;
@@ -59,27 +54,22 @@
             max-width: 1200px;
             margin: 0 auto;
         }
-
         .nav-brand h1 {
             font-size: 1.8rem;
             font-weight: 700;
         }
-
         .nav-brand .z-letter {
             color: var(--text-black);
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
         }
-
         .highlight {
             color: var(--primary-green);
         }
-
         .nav-menu {
             display: flex;
             list-style: none;
             gap: 2rem;
         }
-
         .nav-menu a {
             color: var(--text-secondary);
             text-decoration: none;
@@ -87,17 +77,14 @@
             transition: color 0.3s ease;
             cursor: pointer;
         }
-
         .nav-menu a:hover {
             color: var(--primary-green);
         }
-
         .hamburger {
             display: none;
             flex-direction: column;
             cursor: pointer;
         }
-
         .hamburger span {
             width: 25px;
             height: 3px;
@@ -105,7 +92,6 @@
             margin: 3px 0;
             transition: 0.3s;
         }
-
         /* Hero Section */
         .hero {
             min-height: 100vh;
@@ -114,7 +100,6 @@
             padding: 120px 0 80px;
             background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
         }
-
         .hero-content {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -124,57 +109,48 @@
             margin: 0 auto;
             padding: 0 2rem;
         }
-
         .hero-title {
             font-size: 4rem;
             font-weight: 700;
             margin-bottom: 1rem;
             line-height: 1.1;
         }
-
         .hero-title .z-letter {
             color: var(--text-black);
             text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.3);
         }
-
         .subtitle {
             display: block;
             font-size: 2rem;
             color: var(--text-secondary);
             font-weight: 400;
         }
-
         .hero-description {
             font-size: 1.2rem;
             color: var(--text-secondary);
             margin-bottom: 2rem;
             line-height: 1.6;
         }
-
         .hero-stats {
             display: flex;
             gap: 2rem;
             margin-bottom: 2rem;
         }
-
         .stat {
             text-align: center;
         }
-
         .stat-number {
             display: block;
             font-size: 2rem;
             font-weight: 700;
             color: var(--primary-green);
         }
-
         .stat-label {
             font-size: 0.9rem;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .cta-button {
             display: inline-flex;
             align-items: center;
@@ -190,12 +166,10 @@
             transition: all 0.3s ease;
             text-decoration: none;
         }
-
         .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
         }
-
         /* Code Window */
         .code-window {
             background: var(--bg-card);
@@ -204,7 +178,6 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
-
         .window-header {
             display: flex;
             align-items: center;
@@ -213,74 +186,60 @@
             background: var(--bg-secondary);
             border-bottom: 1px solid var(--border-color);
         }
-
         .window-controls {
             display: flex;
             gap: 0.5rem;
         }
-
         .control {
             width: 12px;
             height: 12px;
             border-radius: 50%;
         }
-
         .control.red {
             background: #ff5f57;
         }
-
         .control.yellow {
             background: #ffbd2e;
         }
-
         .control.green {
             background: #28ca42;
         }
-
         .window-title {
             color: var(--text-secondary);
             font-size: 0.9rem;
         }
-
         .code-content {
             padding: 1.5rem;
             font-family: 'Courier New', monospace;
             position: relative;
         }
-
         .code-line {
             display: flex;
             margin-bottom: 0.5rem;
         }
-
         .line-number {
             color: var(--text-muted);
             margin-right: 1rem;
             min-width: 20px;
         }
-
         .code-text {
             color: var(--primary-green);
         }
-
         .cursor {
             width: 2px;
             height: 20px;
             background: var(--primary-green);
             animation: blink 1s infinite;
         }
-
         @keyframes blink {
             0%, 50% { opacity: 1; }
             51%, 100% { opacity: 0; }
         }
-
         /* Features Section */
         .features {
             padding: 100px 0;
             background: var(--bg-secondary);
         }
-
         .section-title {
             text-align: center;
             font-size: 3rem;
@@ -288,13 +247,11 @@
             margin-bottom: 4rem;
             color: var(--text-primary);
         }
-
         .features-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
         }
-
         .feature-card {
             background: var(--bg-card);
             padding: 2rem;
@@ -304,13 +261,11 @@
             text-align: center;
             opacity: 0;
         }
-
         .feature-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-green);
             box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
         }
-
         .feature-icon {
             display: inline-flex;
             align-items: center;
@@ -322,66 +277,59 @@
             margin-bottom: 1.5rem;
             color: var(--bg-dark);
         }
-
         .feature-card h3 {
             font-size: 1.5rem;
             font-weight: 600;
             margin-bottom: 1rem;
             color: var(--text-primary);
         }
-
         .feature-card p {
             color: var(--text-secondary);
             line-height: 1.6;
         }
-
         /* Download Section */
         .download {
             padding: 100px 0;
             background: linear-gradient(135deg, var(--bg-dark) 0%, var(--bg-secondary) 100%);
             text-align: center;
         }
-
         .download-content h2 {
             font-size: 3rem;
             font-weight: 700;
             margin-bottom: 1rem;
         }
-
         .download-content p {
             font-size: 1.2rem;
             color: var(--text-secondary);
             margin-bottom: 3rem;
         }
-
         .download-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 2rem;
             margin-bottom: 3rem;
         }
-
         .download-card {
             background: var(--bg-card);
             padding: 2rem;
             border-radius: 16px;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            display: flex; /* Added for better alignment of new content */
+            flex-direction: column; /* Added for better alignment of new content */
+            justify-content: space-between; /* Added for better alignment of new content */
         }
-
         .download-card:hover {
             transform: translateY(-5px);
             border-color: var(--primary-green);
             box-shadow: 0 20px 40px rgba(0, 255, 136, 0.1);
         }
-
         .download-card h3 {
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 1rem;
             color: var(--primary-green);
         }
-
         .download-subtitle {
             font-size: 1rem;
             color: var(--text-muted);
@@ -390,33 +338,28 @@
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .download-info {
             display: flex;
             flex-direction: column;
             gap: 1rem;
             margin-bottom: 2rem;
         }
-
         .info-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
         .info-label {
             color: var(--text-muted);
             font-size: 0.9rem;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-
         .info-value {
             color: var(--primary-green);
             font-weight: 600;
             font-size: 1.1rem;
         }
-
         .download-button {
             display: inline-flex;
             align-items: center;
@@ -432,59 +375,59 @@
             cursor: pointer;
             transition: all 0.3s ease;
             width: 100%;
+            text-decoration: none; /* Ensure it's a link */
         }
-
         .download-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 15px 35px rgba(0, 255, 136, 0.4);
         }
-
         .download-note {
             color: var(--text-muted);
             font-size: 0.9rem;
         }
-
+        .download-description { /* New style for the API card description */
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            flex-grow: 1; /* Allow it to take available space */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         /* Footer */
         .footer {
             background: var(--bg-card);
             padding: 60px 0 20px;
             border-top: 1px solid var(--border-color);
         }
-
         .footer-content {
             display: grid;
             grid-template-columns: 1fr 2fr;
             gap: 3rem;
             margin-bottom: 2rem;
         }
-
         .footer-brand h3 {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
-
         .footer-brand .z-letter {
             color: var(--text-black);
             text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.3);
         }
-
         .footer-brand p {
             color: var(--text-secondary);
         }
-
         .footer-links {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 2rem;
         }
-
         .link-group h4 {
             color: var(--text-primary);
             margin-bottom: 1rem;
             font-weight: 600;
         }
-
         .link-group a {
             display: block;
             color: var(--text-secondary);
@@ -493,18 +436,15 @@
             transition: color 0.3s ease;
             cursor: pointer;
         }
-
         .link-group a:hover {
             color: var(--primary-green);
         }
-
         .social-links {
             display: flex;
             gap: 1rem;
             margin-top: 1rem;
             flex-wrap: wrap;
         }
-
         .social-link {
             display: inline-flex;
             align-items: center;
@@ -516,20 +456,17 @@
             border-radius: 8px;
             transition: all 0.3s ease;
         }
-
         .social-link:hover {
             color: var(--primary-green);
             border-color: var(--primary-green);
             transform: translateY(-2px);
         }
-
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
             border-top: 1px solid var(--border-color);
             color: var(--text-muted);
         }
-
         /* Notifications */
         .notification {
             position: fixed;
@@ -543,38 +480,31 @@
             max-width: 400px;
             font-family: 'Inter', sans-serif;
         }
-
         .notification.success {
             background: var(--primary-green);
             color: var(--bg-dark);
         }
-
         .notification.info {
             background: #3742fa;
             color: white;
         }
-
         .notification.error {
             background: #ff4757;
             color: white;
         }
-
         .notification-content {
             display: flex;
             align-items: center;
             gap: 0.75rem;
         }
-
         .notification-icon {
             font-weight: bold;
             font-size: 1.2rem;
         }
-
         .notification-message {
             flex: 1;
             font-weight: 500;
         }
-
         .notification-close {
             background: none;
             border: none;
@@ -590,11 +520,9 @@
             border-radius: 50%;
             transition: background 0.2s;
         }
-
         .notification-close:hover {
             background: rgba(255,255,255,0.2);
         }
-
         /* Animations */
         @keyframes fadeInUp {
             from {
@@ -606,7 +534,6 @@
                 transform: translateY(0);
             }
         }
-
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
@@ -617,13 +544,11 @@
                 opacity: 1;
             }
         }
-
         /* Responsive Design */
         @media (max-width: 768px) {
             .hamburger {
                 display: flex;
             }
-
             .nav-menu {
                 position: fixed;
                 left: -100%;
@@ -637,102 +562,79 @@
                 backdrop-filter: blur(10px);
                 padding: 2rem 0;
             }
-
             .nav-menu.active {
                 left: 0;
             }
-
             .nav-menu li {
                 margin: 1rem 0;
             }
-
             .hamburger.active span:nth-child(2) {
                 opacity: 0;
             }
-
             .hamburger.active span:nth-child(1) {
                 transform: translateY(8px) rotate(45deg);
             }
-
             .hamburger.active span:nth-child(3) {
                 transform: translateY(-8px) rotate(-45deg);
             }
-
             .hero-content {
                 grid-template-columns: 1fr;
                 text-align: center;
                 gap: 2rem;
             }
-
             .hero-title {
                 font-size: 2.5rem;
             }
-
             .subtitle {
                 font-size: 1.5rem;
             }
-
             .hero-stats {
                 justify-content: center;
             }
-
             .features-grid {
                 grid-template-columns: 1fr;
             }
-
             .download-grid {
                 grid-template-columns: 1fr;
             }
-
             .footer-content {
                 grid-template-columns: 1fr;
                 text-align: center;
             }
-
             .section-title {
                 font-size: 2rem;
             }
-
             .download-content h2 {
                 font-size: 2rem;
             }
-
             .social-links {
                 justify-content: center;
                 flex-wrap: wrap;
             }
         }
-
         @media (max-width: 480px) {
             .nav {
                 padding: 1rem;
             }
-
             .hero {
                 padding: 100px 0 60px;
             }
-
             .hero-content {
                 padding: 0 1rem;
             }
-
             .hero-title {
                 font-size: 2rem;
             }
-
             .cta-button, .download-button {
                 padding: 1rem 1.5rem;
                 font-size: 1rem;
             }
-
             .feature-card {
                 padding: 1.5rem;
             }
-
             .features, .download {
                 padding: 60px 0;
             }
-
             .notification {
                 right: 10px;
                 left: 10px;
@@ -761,7 +663,6 @@
             </div>
         </nav>
     </header>
-
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
@@ -825,7 +726,6 @@
             </div>
         </div>
     </section>
-
     <!-- Features Section -->
     <section id="features" class="features">
         <div class="container">
@@ -886,7 +786,6 @@
             </div>
         </div>
     </section>
-
     <!-- Download Section -->
     <section id="download" class="download">
         <div class="container">
@@ -921,32 +820,20 @@
                             Download zClaw
                         </button>
                     </div>
-                    <!-- zClaw API -->
+                    <!-- zClaw API - Modified Section -->
                     <div class="download-card">
-                        <h3>zClaw API</h3>
-                        <div class="download-subtitle">FEITA PARA CRIAR EXECUTORES!</div>
-                        <div class="download-info">
-                            <div class="info-item">
-                                <span class="info-label">Versão:</span>
-                                <span class="info-value">v1.0</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Tamanho:</span>
-                                <span class="info-value">24 KB</span>
-                            </div>
-                            <div class="info-item">
-                                <span class="info-label">Tipo:</span>
-                                <span class="info-value">API Library</span>
-                            </div>
-                        </div>
-                        <button class="download-button" onclick="downloadAPI()">
+                        <h3>Crie seu próprio Executor!</h3>
+                        <p class="download-description">
+                            Quer criar seu executor? Clique aqui para conseguir a API.
+                        </p>
+                        <a href="https://linkvertise.com/1261358/Otv53Zwavrwt" target="_blank" class="download-button">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
                                 <polyline points="7,10 12,15 17,10"/>
                                 <line x1="12" y1="15" x2="12" y2="3"/>
                             </svg>
-                            Download zClawAPI
-                        </button>
+                            Obter zClawAPI
+                        </a>
                     </div>
                 </div>
                 <p class="download-note">
@@ -955,7 +842,6 @@
             </div>
         </div>
     </section>
-
     <!-- Footer -->
     <footer id="contact" class="footer">
         <div class="container">
@@ -1006,7 +892,6 @@
             </div>
         </div>
     </footer>
-
     <script>
         // Mobile menu toggle
         function toggleMobileMenu() {
@@ -1015,7 +900,6 @@
             hamburger.classList.toggle('active');
             navMenu.classList.toggle('active');
         }
-
         // Close mobile menu when clicking on a link
         document.querySelectorAll('.nav-menu a').forEach(link => {
             link.addEventListener('click', () => {
@@ -1025,7 +909,6 @@
                 navMenu.classList.remove('active');
             });
         });
-
         // Smooth scrolling for navigation links
         function scrollToSection(sectionId) {
             const target = document.getElementById(sectionId);
@@ -1036,7 +919,6 @@
                 });
             }
         }
-
         // Download functions
         function downloadExecutor() {
             showNotification('Download iniciado! zClaw será baixado em instantes.', 'success');
@@ -1044,20 +926,18 @@
                 window.open('https://link-center.net/1261358/g308y2yoSuES', '_blank');
             }, 1000);
         }
-
-        function downloadAPI() {
-            showNotification('Download da zClawAPI iniciado!', 'success');
-            setTimeout(() => {
-                window.open('https://linkvertise.com/1261358/Otv53Zwavrwt', '_blank');
-            }, 1000);
-        }
-
+        // The downloadAPI function is no longer needed as the API button is now a direct link.
+        // function downloadAPI() {
+        //     showNotification('Download da zClawAPI iniciado!', 'success');
+        //     setTimeout(() => {
+        //         window.open('https://linkvertise.com/1261358/Otv53Zwavrwt', '_blank');
+        //     }, 1000);
+        // }
         // Notification system
         function showNotification(message, type = 'info') {
             // Remove existing notifications
             const existingNotifications = document.querySelectorAll('.notification');
             existingNotifications.forEach(notification => notification.remove());
-
             // Create notification element
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
@@ -1071,7 +951,6 @@
                 </div>
             `;
             document.body.appendChild(notification);
-
             // Auto remove after 5 seconds
             setTimeout(() => {
                 if (notification.parentElement) {
@@ -1079,7 +958,6 @@
                 }
             }, 5000);
         }
-
         // Parallax effect for hero section
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
@@ -1089,7 +967,6 @@
                 codeWindow.style.transform = `translateY(${scrolled * 0.1}px)`;
             }
         });
-
         // Add scroll effect to header
         window.addEventListener('scroll', () => {
             const header = document.querySelector('.header');
@@ -1099,13 +976,11 @@
                 header.style.background = 'rgba(10, 10, 10, 0.95)';
             }
         });
-
         // Animate feature cards on scroll
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
         };
-
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -1113,7 +988,6 @@
                 }
             });
         }, observerOptions);
-
         // Observe feature cards when DOM is loaded
         document.addEventListener('DOMContentLoaded', () => {
             const featureCards = document.querySelectorAll('.feature-card');
@@ -1121,21 +995,17 @@
                 observer.observe(card);
             });
         });
-
         // Add typing effect to code window
         function typeCode() {
             const codeLines = document.querySelectorAll('.code-text');
             const originalTexts = Array.from(codeLines).map(line => line.textContent);
             codeLines.forEach(line => line.textContent = '');
-
             let lineIndex = 0;
             let charIndex = 0;
-
             function typeNextChar() {
                 if (lineIndex < codeLines.length) {
                     const currentLine = codeLines[lineIndex];
                     const targetText = originalTexts[lineIndex];
-
                     if (charIndex < targetText.length) {
                         currentLine.textContent += targetText[charIndex];
                         charIndex++;
@@ -1147,13 +1017,10 @@
                     }
                 }
             }
-
             setTimeout(typeNextChar, 1000);
         }
-
         // Start typing effect when page loads
         document.addEventListener('DOMContentLoaded', typeCode);
-
         // Add loading animation
         window.addEventListener('load', () => {
             document.body.style.opacity = '0';
@@ -1162,7 +1029,6 @@
                 document.body.style.opacity = '1';
             }, 100);
         });
-
         console.log('🟢 zClaw Executor Website carregado com sucesso!');
         console.log('💚 100% UNC | No Key | 3 API | No Crash');
         console.log('🆕 zClawAPI download adicionado!');
