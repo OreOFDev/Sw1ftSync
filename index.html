@@ -528,7 +528,6 @@
         <button class="sidebar-btn" id="tab-influencers" data-category="influencers">Influencers</button>
         <button class="sidebar-btn" id="tab-flappybird" data-category="flappybird">FlappyBird</button>
         <button class="sidebar-btn" id="tab-tuxcards" data-category="tuxcards">Tux Cards</button>
-        <button class="sidebar-btn" id="tab-tuxobfuscator" data-category="tuxobfuscator">Tux Obfuscator</button>
       </div>
     </nav>
     <main>
@@ -609,7 +608,6 @@
     const tabInfluencersBtn = document.getElementById('tab-influencers');
     const tabFlappyBirdBtn = document.getElementById('tab-flappybird');
     const tabTuxCardsBtn = document.getElementById('tab-tuxcards');
-    const tabTuxObfuscatorBtn = document.getElementById('tab-tuxobfuscator');
     const sidebarBtns = document.querySelectorAll('.sidebar-btn');
     const tabContentLoadstring = document.getElementById('tab-content-loadstring');
     const loadstringForm = document.getElementById('loadstring-form');
@@ -686,10 +684,6 @@
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/tuxcards';
         return;
       }
-      if (category === 'tuxobfuscator') {
-        window.location.href = 'https://oreofdev.github.io/Sw1ftSync/tuxobfuscator/';
-        return;
-      }
       // INFLUENCERS: REDIRECIONA PRA PÁGINA
       if (category === 'influencers') {
         window.location.href = 'https://oreofdev.github.io/Sw1ftSync/Influencers/';
@@ -710,7 +704,6 @@
     tabInfluencersBtn.addEventListener('click', () => showCategory('influencers'));
     tabFlappyBirdBtn.addEventListener('click', () => showCategory('flappybird'));
     tabTuxCardsBtn.addEventListener('click', () => showCategory('tuxcards'));
-    tabTuxObfuscatorBtn.addEventListener('click', () => showCategory('tuxobfuscator'));
 
     loadstringForm.addEventListener('submit', function(e) {
       e.preventDefault();
