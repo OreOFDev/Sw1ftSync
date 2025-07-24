@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Script Hub</title>
+    <style>
+        :root {
+            --dark-bg: rgb(15, 15, 15);
+            --medium-bg: rgb(45, 45, 45);
+            --light-bg: rgb(64, 64, 64);
+            --text-light: rgb(204, 204, 204);
+            --border: rgb(77, 77, 77);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .title {
+            font-size: 28px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .search-input {
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            background: var(--medium-bg);
+            color: var(--text-light);
+            border-radius: 5px;
+            width: 300px;
+        }
+
+        .search-button {
+            padding: 10px 20px;
+            background: var(--light-bg);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .search-button:hover {
+            background: var(--border);
+        }
+
+        .scripts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .script-card {
+            background: var(--medium-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .script-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            background: var(--dark-bg);
+        }
+
+        .script-content {
+            padding: 15px;
+        }
+
+        .script-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .script-info {
+            opacity: 0.8;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .copy-button {
+            width: 100%;
+            padding: 10px;
+            background: var(--light-bg);
+            color: var(--text-light);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .copy-button:hover {
+            background: var(--border);
+        }
+
+        .loader {
+            border: 4px solid var(--border);
+            border-top: 4px solid var(--text-light);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 50px auto;
+        }
+
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--medium-bg);
+            color: var(--text-light);
+            padding: 15px 25px;
+            border-radius: 5px;
+            display: none;
+            border: 1px solid var(--border);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1 class="title">Script Hub</h1>
+        <div class="search-box">
+            <input type="text" class="search-input" placeholder="Search scripts..." id="searchInput">
+            <button class="search-button" onclick="searchScripts()">Search</button>
+        </div>
+    </div>
+
+    <div class="scripts-grid" id="scriptsContainer">
+        <div class="loader"></div>
+    </div>
+
+    <div class="notification" id="notification"></div>
+
+    <script>
+        let scriptsData = [];
+        const proxies = [
+            'https://cors-anywhere.herokuapp.com/',
+            'https://api.codetabs.com/v1/proxy/?quest=',
+            'https://thingproxy.freeboard.io/fetch/'
+        ];
+        let currentProxy = 0;
+
+        async function fetchWithRetry(url, retries = 3) {
+            try {
+                const proxyUrl = proxies[currentProxy] + encodeURIComponent(url);
+                const response = await fetch(proxyUrl);
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+                return response.json();
+            } catch (error) {
+                if (retries > 0) {
+                    currentProxy = (currentProxy + 1) % proxies.length;
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    return fetchWithRetry(url, retries - 1);
+                }
+                throw error;
+            }
+        }
+
+        async function loadScripts(search = '') {
+            const container = document.getElementById('scriptsContainer');
+            container.innerHTML = '<div class="loader"></div>';
+            
+            try {
+                const apiUrl = search
+                    ? `https://scriptblox.com/api/script/search?q=${encodeURIComponent(search)}`
+                    : 'https://scriptblox.com/api/script/fetch';
+                
+                const data = await fetchWithRetry(apiUrl);
+                scriptsData = data.result?.scripts || [];
+                
+                let html = '';
+                scriptsData.forEach((script, index) => {
+                    const raw = script.image;
+                    const imageUrl = raw
+                        ? (raw.startsWith('http') ? raw : `https://scriptblox.com${raw}`)
+                        : 'https://placehold.co/300x180/2d2d2d/808080?text=No+Image';
+        
+                    html += `
+                        <div class="script-card">
+                            <img
+                                src="${imageUrl}"
+                                class="script-image"
+                                onerror="this.src='https://placehold.co/300x180/2d2d2d/808080?text=Image+Error'"
+                            >
+                            <div class="script-content">
+                                <h3 class="script-title">${script.title}</h3>
+                                <p class="script-info">${script.game?.name || 'No game specified'}</p>
+                                <p class="script-info">Views: ${script.views?.toLocaleString() || 'N/A'}</p>
+                                <button class="copy-button" data-index="${index}">Copy Script</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+                document.querySelectorAll('.copy-button').forEach(btn => btn.addEventListener('click', handleCopy));
+            } catch (error) {
+                showMessage(`Failed to load: ${error.message}`);
+                container.innerHTML = '<p style="color: #ccc">Failed to load scripts. Please try again later.</p>';
+            }
+        }
+
+        function handleCopy(event) {
+            const index = event.target.dataset.index;
+            const script = scriptsData[index]?.script;
+            
+            if (!script) {
+                showMessage('No script found');
+                return;
+            }
+
+            const textarea = document.createElement('textarea');
+            textarea.value = script;
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showMessage('Script copied!');
+            } catch (err) {
+                showMessage('Failed to copy script');
+            }
+            
+            document.body.removeChild(textarea);
+        }
+
+        function searchScripts() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            loadScripts(searchTerm);
+        }
+
+        function showMessage(text) {
+            const notif = document.getElementById('notification');
+            notif.textContent = text;
+            notif.style.display = 'block';
+            setTimeout(() => notif.style.display = 'none', 3000);
+        }
+
+        window.onload = () => {
+            loadScripts();
+            document.getElementById('searchInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') searchScripts();
+            });
+        };
+    </script>
+</body>
+</html>
